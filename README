@@ -1,3 +1,7 @@
+********************** THIS IS A WORK IN PROGRESS *********************************
+I will remove this banner when the package is ready for use.
+***********************************************************************************
+
 An implementation, in ATS2, of the Oliveira-Takahashi ‘ITP’ method for
 finding roots of a univariate real function.
 
