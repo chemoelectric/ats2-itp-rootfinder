@@ -1,0 +1,9 @@
+An implementation, in ATS2, of the Oliveira-Takahashi ‘ITP’ method for
+finding roots of a univariate real function.
+
+Reference:
+
+  I.F.D. Oliveira and R.H.C. Takahashi. 2020. An Enhancement of
+  the Bisection Method Average Performance Preserving Minmax
+  Optimality. ACM Trans. Math. Softw. 47, 1, Article 5 (December
+  2020), 24 pages. https://doi.org/10.1145/3423597
