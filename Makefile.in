@@ -668,10 +668,13 @@ ITP_ROOTFINDER_SATS = itp-rootfinder/SATS/itp-rootfinder.sats
 ITP_ROOTFINDER_SATS_C = itp-rootfinder/SATS/itp-rootfinder_sats.c
 ITP_ROOTFINDER_DATS = itp-rootfinder/DATS/itp-rootfinder.dats
 ITP_ROOTFINDER_DATS_C = itp-rootfinder/DATS/itp-rootfinder_dats.c
+ITP_ROOTFINDER_CATS = itp-rootfinder/CATS/itp-rootfinder.cats
 nobase_dist_pkginclude_HEADERS = $(ITP_ROOTFINDER_SATS) \
-	$(ITP_ROOTFINDER_DATS)
+	$(ITP_ROOTFINDER_DATS) $(ITP_ROOTFINDER_CATS)
 nodist_libats2_itp_rootfinder_la_SOURCES = $(ITP_ROOTFINDER_SATS_C) \
 	$(ITP_ROOTFINDER_DATS_C)
+nodist_libats2_itp_rootfinder_la_DEPENDENCIES =  \
+	$(ITP_ROOTFINDER_CATS)
 nodist_list_ats_dependencies_SOURCES =  \
 	list-ats-dependencies_depsprog.c
 list_ats_dependencies_CPPFLAGS = $(AM_CPPFLAGS) -DATS_MEMALLOC_LIBC

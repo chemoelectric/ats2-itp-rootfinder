@@ -158,14 +158,18 @@ ITP_ROOTFINDER_SATS = itp-rootfinder/SATS/itp-rootfinder.sats
 ITP_ROOTFINDER_SATS_C = itp-rootfinder/SATS/itp-rootfinder_sats.c
 ITP_ROOTFINDER_DATS = itp-rootfinder/DATS/itp-rootfinder.dats
 ITP_ROOTFINDER_DATS_C = itp-rootfinder/DATS/itp-rootfinder_dats.c
+ITP_ROOTFINDER_CATS = itp-rootfinder/CATS/itp-rootfinder.cats
 
 nobase_dist_pkginclude_HEADERS =
 nobase_dist_pkginclude_HEADERS += $(ITP_ROOTFINDER_SATS)
 nobase_dist_pkginclude_HEADERS += $(ITP_ROOTFINDER_DATS)
+nobase_dist_pkginclude_HEADERS += $(ITP_ROOTFINDER_CATS)
 
 nodist_libats2_itp_rootfinder_la_SOURCES =
 nodist_libats2_itp_rootfinder_la_SOURCES += $(ITP_ROOTFINDER_SATS_C)
 nodist_libats2_itp_rootfinder_la_SOURCES += $(ITP_ROOTFINDER_DATS_C)
+nodist_libats2_itp_rootfinder_la_DEPENDENCIES =
+nodist_libats2_itp_rootfinder_la_DEPENDENCIES += $(ITP_ROOTFINDER_CATS)
 
 xats-c-clean:
 	-rm -f itp-rootfinder/SATS/*_sats.c
