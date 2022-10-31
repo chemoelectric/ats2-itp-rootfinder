@@ -42,12 +42,15 @@ representation as if it were floating point.
 
 staload "itp-rootfinder/SATS/itp-rootfinder.sats"
 
+macdef raise_exception (kind, message) =
+  $raise itp_rootfinder_exc ($mylocation, ,(kind))
+
+typedef integer (i : int) = lint i
+typedef Integer = [i : int] integer i
+
 extern praxi
 lemma_square_is_gte :
   {i : int} () -<prf> [i <= i * i] void
-
-macdef raise_exception (kind, message) =
-  $raise itp_rootfinder_exc ($mylocation, ,(kind))
 
 (* The Golden Ratio, (1 + √5)/2, rounded down by about
    0.00003398875. *)
@@ -57,9 +60,12 @@ macdef raise_exception (kind, message) =
 extern fn g0float_epsilon_float : () -<> g0float fltknd = "mac#%"
 extern fn g0float_epsilon_double : () -<> g0float dblknd = "mac#%"
 extern fn g0float_epsilon_ldouble : () -<> g0float ldblknd = "mac#%"
-implement itp_rootfinder$g0float_epsilon<fltknd> = g0float_epsilon_float
-implement itp_rootfinder$g0float_epsilon<dblknd> = g0float_epsilon_double
-implement itp_rootfinder$g0float_epsilon<ldblknd> = g0float_epsilon_ldouble
+implement itp_rootfinder$g0float_epsilon<fltknd> =
+  g0float_epsilon_float
+implement itp_rootfinder$g0float_epsilon<dblknd> =
+  g0float_epsilon_double
+implement itp_rootfinder$g0float_epsilon<ldblknd> =
+  g0float_epsilon_ldouble
 
 extern fn g0float_pow_float :
   (g0float fltknd, g0float fltknd) -<> g0float fltknd = "mac#%"
@@ -81,7 +87,7 @@ itp_rootfinder$epsilon () =
 
 implement {}
 itp_rootfinder$extra_steps () =
-  0L
+  g1i2i 0
 
 implement {tk}
 itp_rootfinder$kappa1 () =
@@ -143,11 +149,16 @@ root_bracket_finder
           (a : g0float tk,
            b : g0float tk)
     : @(g0float tk, g0float tk) =
+  (* The following code is based on an earlier implementation I wrote
+     in Scheme. *)
   let
+    val () = assertloc (a <= b)
+
     typedef real = g0float tk
     macdef i2f = g0int2float<intknd,tk>
     macdef zero = i2f 0
     macdef one = i2f 1
+    macdef real_pow = itp_rootfinder$g0float_pow<tk>
 
     typedef sign_t = [s : int | ~1 <= s; s <= 1] int s
 
@@ -173,15 +184,15 @@ root_bracket_finder
 
     fn
     ceil_log2 (x : real)
-        :<!exn> [i : pos] lint i =
+        :<!exn> [i : pos] integer i =
       let
         fun
         loop {i : pos}
              {k : nat}
              .<k>.
-             (i : lint i,
+             (i : integer i,
               k : int k)
-            :<!exn> [i : pos] lint i =
+            :<!exn> [i : pos] integer i =
           if x <= g0i2f i then
             i
           else if k <= 1 then
@@ -189,9 +200,9 @@ root_bracket_finder
           else
             loop {2 * i} {k - 1} (i + i, pred k)
 
-        prval () = lemma_sizeof {lint} ()
+        prval () = lemma_sizeof {Integer} ()
       in
-        loop (1L, sz2i (i2sz 8 * sizeof<lint>))
+        loop (1L, sz2i (i2sz 8 * sizeof<Integer>))
       end
 
     val one_plus_phi =
@@ -202,7 +213,7 @@ root_bracket_finder
 
     val nbisect = ceil_log2 ((b - a) / two_eps)
     val n0 = itp_rootfinder$extra_steps ()
-    val n_max = nbisect + n0
+    val n_max = nbisect + g1i2i n0
 
     val kappa1 = itp_rootfinder$kappa1 ()
     and kappa2 = itp_rootfinder$kappa2 ()
@@ -217,14 +228,72 @@ root_bracket_finder
     val ya = itp_rootfinder$func a
     and yb = itp_rootfinder$func b
 
-    val sign_ya = sign ya
-    and sign_yb = sign yb
+    val sigma_ya = sign ya
+    and sigma_yb = sign yb
+
+    fun
+    loop {pow2 : pos}
+         .<pow2>.
+         (pow2 : integer pow2,
+          a    : real,
+          b    : real,
+          ya   : real,
+          yb   : real)
+        : @(real, real) =
+      if pow2 = g1i2i 1 then
+        @(a, b)
+      else if b - a <= two_eps then
+        @(a, b)
+      else
+        let
+          val b_sub_a = b - a
+          val half_of_b_sub_a = (b - a) / i2f 2
+
+          val xbisect = a + half_of_b_sub_a
+          
+          (* xf – interpolation by regula falsi. *)
+          val yb_sub_ya = yb - ya
+          val xf = ((yb / yb_sub_ya) * a) - ((ya / yb_sub_ya) * b)
+
+          val delta = kappa1 * abs (real_pow (b_sub_a, kappa2))
+          val xbisect_sub_xf = xbisect - xf
+          val sigma = sign (xbisect_sub_xf)
+
+          (* xt – the ‘truncation’ of xf. *)
+          val xt =
+            if delta <= abs (xbisect - xf) then
+              xf + apply_sign (sigma, delta)
+            else
+              xbisect
+
+          val r = (g0i2f pow2 * eps) - half_of_b_sub_a
+
+          (* xp – the projection of xt onto [x½-r,x½+r]. *)
+          val xp =
+            if abs (xt - xbisect) <= r then
+              xt
+            else
+              xbisect - apply_sign (sigma, r)
+
+          val yp = itp_rootfinder$func xp
+          val sigma_yp = sign yp
+        in
+          if sigma_yp = sigma_ya then
+            (* yp has the same sign as ya. Make it the new ya. *)
+            loop (half pow2, xp, b, yp, yb)
+          else if sigma_yp = sigma_yb then
+            (* yp has the same sign as yb. Make it the new yb. *)
+            loop (half pow2, a, xp, ya, yp)
+          else
+            (* yp is zero. *)
+            @(xp, xp)
+        end
   in
-    if sign_ya = 0 then
+    if sigma_ya = 0 then
       @(a, a)
-    else if sign_yb = 0 then
+    else if sigma_yb = 0 then
       @(b, b)
-    else if 0 < sign_ya * sign_yb then
+    else if 0 < sigma_ya * sigma_yb then
       raise_exception itp_rootfinder_root_not_bracketed
     else
 @(zero, zero)                     (* FIXME *)
