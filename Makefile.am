@@ -193,7 +193,7 @@ tests_test1_LDADD = libats2-itp-rootfinder.la
 
 tests-clean:
 	-rm -f tests/*.$(OBJEXT)
-	-rm -f $(addsuffix tests/$(TESTS),_tests.c)
+	-rm -f $(addsuffix _tests.c,$(TESTS))
 CLEANFILES += $(TESTS)
 
 #--------------------------------------------------------------------------

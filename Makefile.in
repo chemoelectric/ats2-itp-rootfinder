@@ -1735,7 +1735,7 @@ xats-c-clean:
 
 tests-clean:
 	-rm -f tests/*.$(OBJEXT)
-	-rm -f $(addsuffix tests/$(TESTS),_tests.c)
+	-rm -f $(addsuffix _tests.c,$(TESTS))
 
 #--------------------------------------------------------------------------
 
