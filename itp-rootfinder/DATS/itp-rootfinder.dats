@@ -43,7 +43,7 @@ representation as if it were floating point.
 staload "itp-rootfinder/SATS/itp-rootfinder.sats"
 
 macdef raise_exception (kind, message) =
-  $raise itp_rootfinder_exc ($mylocation, ,(kind))
+  $raise rootfinder_exc ($mylocation, ,(kind))
 
 typedef integer (i : int) = lint i
 typedef Integer = [i : int] integer i
@@ -57,14 +57,14 @@ lemma_square_is_gte :
 #define PHI_NUMERATOR 1618
 #define PHI_DENOMINATOR 1000
 
+(*------------------------------------------------------------------*)
+
 extern fn g0float_epsilon_float : () -<> g0float fltknd = "mac#%"
 extern fn g0float_epsilon_double : () -<> g0float dblknd = "mac#%"
 extern fn g0float_epsilon_ldouble : () -<> g0float ldblknd = "mac#%"
-implement itp_rootfinder$g0float_epsilon<fltknd> =
-  g0float_epsilon_float
-implement itp_rootfinder$g0float_epsilon<dblknd> =
-  g0float_epsilon_double
-implement itp_rootfinder$g0float_epsilon<ldblknd> =
+implement rootfinder$g0float_epsilon<fltknd> = g0float_epsilon_float
+implement rootfinder$g0float_epsilon<dblknd> = g0float_epsilon_double
+implement rootfinder$g0float_epsilon<ldblknd> =
   g0float_epsilon_ldouble
 
 extern fn g0float_pow_float :
@@ -73,38 +73,13 @@ extern fn g0float_pow_double :
   (g0float dblknd, g0float dblknd) -<> g0float dblknd = "mac#%"
 extern fn g0float_pow_ldouble :
   (g0float ldblknd, g0float ldblknd) -<> g0float ldblknd = "mac#%"
-implement itp_rootfinder$g0float_pow<fltknd> = g0float_pow_float
-implement itp_rootfinder$g0float_pow<dblknd> = g0float_pow_double
-implement itp_rootfinder$g0float_pow<ldblknd> = g0float_pow_ldouble
+implement rootfinder$g0float_pow<fltknd> = g0float_pow_float
+implement rootfinder$g0float_pow<dblknd> = g0float_pow_double
+implement rootfinder$g0float_pow<ldblknd> = g0float_pow_ldouble
 
-implement {tk}
-itp_rootfinder$epsilon () =
-  let
-    macdef i2f = g0int2float<intknd,tk>
-  in
-    i2f 1000 * itp_rootfinder$g0float_epsilon<tk> ()
-  end
+(*------------------------------------------------------------------*)
 
-implement {}
-itp_rootfinder$extra_steps () =
-  g1i2i 0
-
-implement {tk}
-itp_rootfinder$kappa1 () =
-  let
-    macdef i2f = g0int2float<intknd,tk>
-  in
-    i2f 1 / i2f 10
-  end
-
-implement {tk}
-itp_rootfinder$kappa2 () =
-  let
-    macdef i2f = g0int2float<intknd,tk>
-  in
-    i2f 2
-  end
-
+(* Integer power of two, by the squaring method. *)
 fn {tk : tkind}
 g1int_pow2 {k : nat}
            (k : g1int (tk, k))
@@ -144,11 +119,43 @@ g1int_pow2 {k : nat}
     loop (g1i2i 2, k, g1i2i 1)
   end
 
+(*------------------------------------------------------------------*)
+
+implement {tk}
+rootfinder$epsilon () =
+  let
+    macdef i2f = g0int2float<intknd,tk>
+  in
+    i2f 1000 * rootfinder$g0float_epsilon<tk> ()
+  end
+
+implement {}
+rootfinder$extra_steps () =
+  g1i2i 0
+
+implement {tk}
+rootfinder$kappa1 () =
+  let
+    macdef i2f = g0int2float<intknd,tk>
+  in
+    i2f 1 / i2f 10
+  end
+
+implement {tk}
+rootfinder$kappa2 () =
+  let
+    macdef i2f = g0int2float<intknd,tk>
+  in
+    i2f 2
+  end
+
+(*------------------------------------------------------------------*)
+
 fn {tk : tkind}
 root_bracket_finder
           (a : g0float tk,
            b : g0float tk)
-    : @(g0float tk, g0float tk) =
+    :<!exn> @(g0float tk, g0float tk) =
   (* The following code is based on an earlier implementation I wrote
      in Scheme. *)
   let
@@ -158,7 +165,7 @@ root_bracket_finder
     macdef i2f = g0int2float<intknd,tk>
     macdef zero = i2f 0
     macdef one = i2f 1
-    macdef real_pow = itp_rootfinder$g0float_pow<tk>
+    macdef real_pow = rootfinder$g0float_pow<tk>
 
     typedef sign_t = [s : int | ~1 <= s; s <= 1] int s
 
@@ -196,7 +203,7 @@ root_bracket_finder
           if x <= g0i2f i then
             i
           else if k <= 1 then
-            raise_exception itp_rootfinder_epsilon_too_small
+            raise_exception rootfinder_epsilon_too_small
           else
             loop {2 * i} {k - 1} (i + i, pred k)
 
@@ -208,25 +215,25 @@ root_bracket_finder
     val one_plus_phi =
       i2f (PHI_DENOMINATOR + PHI_NUMERATOR) / i2f PHI_DENOMINATOR
 
-    val eps = itp_rootfinder$epsilon ()
+    val eps = rootfinder$epsilon ()
     val two_eps = eps + eps
 
     val nbisect = ceil_log2 ((b - a) / two_eps)
-    val n0 = itp_rootfinder$extra_steps ()
+    val n0 = rootfinder$extra_steps ()
     val n_max = nbisect + g1i2i n0
 
-    val kappa1 = itp_rootfinder$kappa1 ()
-    and kappa2 = itp_rootfinder$kappa2 ()
+    val kappa1 = rootfinder$kappa1 ()
+    and kappa2 = rootfinder$kappa2 ()
 
     val () =
       if kappa1 <= zero then
-        raise_exception itp_rootfinder_kappa1_not_positive
+        raise_exception rootfinder_kappa1_not_positive
     val () =
       if (kappa2 < one) + (one_plus_phi < kappa2) then
-        raise_exception itp_rootfinder_kappa2_out_of_range
+        raise_exception rootfinder_kappa2_out_of_range
 
-    val ya = itp_rootfinder$func a
-    and yb = itp_rootfinder$func b
+    val ya = rootfinder$func a
+    and yb = rootfinder$func b
 
     val sigma_ya = sign ya
     and sigma_yb = sign yb
@@ -239,7 +246,7 @@ root_bracket_finder
           b    : real,
           ya   : real,
           yb   : real)
-        : @(real, real) =
+        :<!exn> @(real, real) =
       if pow2 = g1i2i 1 then
         @(a, b)
       else if b - a <= two_eps then
@@ -275,7 +282,7 @@ root_bracket_finder
             else
               xbisect - apply_sign (sigma, r)
 
-          val yp = itp_rootfinder$func xp
+          val yp = rootfinder$func xp
           val sigma_yp = sign yp
         in
           if sigma_yp = sigma_ya then
@@ -294,7 +301,53 @@ root_bracket_finder
     else if sigma_yb = 0 then
       @(b, b)
     else if 0 < sigma_ya * sigma_yb then
-      raise_exception itp_rootfinder_root_not_bracketed
+      raise_exception rootfinder_root_not_bracketed
     else
-@(zero, zero)                     (* FIXME *)
+      loop (g1int_pow2 n_max, a, b, ya, yb)
   end
+
+(*------------------------------------------------------------------*)
+
+implement {tk}
+rootbracketer_with_template_epsilon (a, b) =
+  let
+    fn
+    bracketer (a0 : g0float tk,
+               b0 : g0float tk)
+        :<!exn> @(g0float tk, g0float tk) =
+      root_bracket_finder<tk> (a0, b0)
+  in
+    if a <= b then
+      bracketer (a, b)
+    else
+      bracketer (b, a)
+  end
+
+implement {tk}
+rootbracketer_with_given_epsilon (a, b, eps) =
+  let
+    implement rootfinder$epsilon<tk> () = eps
+  in
+    rootbracketer_with_template_epsilon<tk> (a, b)
+  end
+
+implement {tk}
+rootfinder_with_template_epsilon (a, b) =
+  let
+    macdef i2f = g0int2float<intknd,tk>
+    val @(a1, b1) = rootbracketer_with_template_epsilon<tk> (a, b)
+  in
+    a1 + ((b1 - a1) / i2f 2)
+  end
+
+implement {tk}
+rootfinder_with_given_epsilon (a, b, eps) =
+  let
+    macdef i2f = g0int2float<intknd,tk>
+    val @(a1, b1) = rootbracketer_with_given_epsilon<tk> (a, b, eps)
+  in
+    a1 + ((b1 - a1) / i2f 2)
+  end
+
+(*------------------------------------------------------------------*)
+
