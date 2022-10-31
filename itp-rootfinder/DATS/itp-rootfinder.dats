@@ -42,8 +42,12 @@ representation as if it were floating point.
 
 staload "itp-rootfinder/SATS/itp-rootfinder.sats"
 
+extern praxi
+lemma_square_is_gte :
+  {i : int} () -<prf> [i <= i * i] void
+
 macdef raise_exception (kind, message) =
-  $raise itp_rootfinder_exc ($mylocation, ,(kind), ,(message))
+  $raise itp_rootfinder_exc ($mylocation, ,(kind))
 
 (* The Golden Ratio, (1 + √5)/2, rounded down by about
    0.00003398875. *)
@@ -57,6 +61,17 @@ extern fn {tk : tkind} epsilon : () -<> g0float tk
 implement epsilon<fltknd> = epsilon_float
 implement epsilon<dblknd> = epsilon_double
 implement epsilon<ldblknd> = epsilon_ldouble
+
+extern fn pow_float :
+  (g0float fltknd, g0float fltknd) -<> g0float fltknd = "mac#%"
+extern fn pow_double :
+  (g0float dblknd, g0float dblknd) -<> g0float dblknd = "mac#%"
+extern fn pow_ldouble :
+  (g0float ldblknd, g0float ldblknd) -<> g0float ldblknd = "mac#%"
+extern fn {tk : tkind} pow : (g0float tk, g0float tk) -<> g0float tk
+implement pow<fltknd> = pow_float
+implement pow<dblknd> = pow_double
+implement pow<ldblknd> = pow_ldouble
 
 implement {tk}
 itp_rootfinder$epsilon () =
@@ -86,43 +101,44 @@ itp_rootfinder$kappa2 () =
     i2f 2
   end
 
-(* Integer powers where base and power are of any unsigned integer
-   types. *)
-fn {tk_b, tk_p : tkind}
-g1uint_ipow
-          (base  : g1uint tk_b,
-           power : g1uint tk_p)
-    :<> g1uint tk_b =
+fn {tk : tkind}
+g1int_pow2 {k : nat}
+           (k : g1int (tk, k))
+    :<> [pow : pos] g1int (tk, pow) =
   let
     fun
-    loop {p : nat}
-         .<p>.
-         (b     : g1uint tk_b,
-          p     : g1uint (tk_p, p),
-          accum : g1uint tk_b)
-        :<> g1uint tk_b =
+    loop {b    : int | 2 <= b}
+         {i    : nat}
+         {pow0 : pos}
+         .<i>.
+         (b     : g1int (tk, b),
+          i     : g1int (tk, i),
+          accum : g1int (tk, pow0))
+        :<> [pow1 : pos] g1int (tk, pow1) =
       let
-        val ph = half p
-        val accum = (if ph + ph = p then accum else accum * b)
+        prval () = lemma_square_is_gte {b} ()
+        val ihalf = half i
       in
-        if ph = g1i2u 0 then
-          accum
+        if ihalf + ihalf = i then
+          begin
+            if ihalf = g1i2i 0 then
+              accum
+            else
+              loop (b * b, ihalf, accum)
+          end
         else
-          loop (b * b, ph, accum)
+          let
+            prval () = mul_pos_pos_pos (mul_make {pow0, b} ())
+          in
+            if ihalf = g1i2i 0 then
+              accum * b
+            else
+              loop (b * b, ihalf, accum * b)
+          end
       end
-
-    prval () = lemma_g1uint_param base
-    prval () = lemma_g1uint_param power
   in
-    loop (base, power, g1i2u 1)
+    loop (g1i2i 2, k, g1i2i 1)
   end
-
-fn {tk_b, tk_p : tkind}
-g0uint_ipow
-          (base  : g0uint tk_b,
-           power : g0uint tk_p)
-    :<> g0uint tk_b =
-  g0ofg1 (g1uint_ipow (g1ofg0 base, g1ofg0 power))
 
 fn {tk : tkind}
 root_bracket_finder
@@ -133,6 +149,7 @@ root_bracket_finder
     typedef real = g0float tk
     macdef i2f = g0int2float<intknd,tk>
     macdef zero = i2f 0
+    macdef one = i2f 1
 
     typedef sign_t = [s : int | ~1 <= s; s <= 1] int s
 
@@ -170,8 +187,7 @@ root_bracket_finder
           if x <= g0i2f i then
             i
           else if k <= 1 then
-            raise_exception (itp_rootfinder_epsilon_too_small,
-                             "epsilon is too small for the bracket")
+            raise_exception itp_rootfinder_epsilon_too_small
           else
             loop {2 * i} {k - 1} (i + i, pred k)
 
@@ -190,6 +206,16 @@ root_bracket_finder
     val n0 = itp_rootfinder$extra_steps ()
     val n_max = nbisect + n0
 
+    val kappa1 = itp_rootfinder$kappa1 ()
+    and kappa2 = itp_rootfinder$kappa2 ()
+
+    val () =
+      if kappa1 <= zero then
+        raise_exception itp_rootfinder_kappa1_not_positive
+    val () =
+      if (kappa2 < one) + (one_plus_phi < kappa2) then
+        raise_exception itp_rootfinder_kappa2_out_of_range
+
     val ya = itp_rootfinder$func a
     and yb = itp_rootfinder$func b
 
@@ -201,8 +227,7 @@ root_bracket_finder
     else if sign_yb = 0 then
       @(b, b)
     else if 0 < sign_ya * sign_yb then
-      raise_exception (itp_rootfinder_root_not_bracketed,
-                       "the root is not bracketed")
+      raise_exception itp_rootfinder_root_not_bracketed
     else
 @(zero, zero)                     (* FIXME *)
   end
