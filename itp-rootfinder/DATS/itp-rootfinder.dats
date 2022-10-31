@@ -50,10 +50,6 @@ macdef raise_exception (kind, message) =
 #define PHI_NUMERATOR 1618
 #define PHI_DENOMINATOR 1000
 
-extern fn g0float2int_ldouble_llint :
-  g0float ldblknd -<> g0int intknd = "mac#%"
-implement g0float2int<ldblknd,intknd> = g0float2int_ldouble_llint
-
 extern fn epsilon_float : () -<> g0float fltknd = "mac#%"
 extern fn epsilon_double : () -<> g0float dblknd = "mac#%"
 extern fn epsilon_ldouble : () -<> g0float ldblknd = "mac#%"
@@ -61,14 +57,6 @@ extern fn {tk : tkind} epsilon : () -<> g0float tk
 implement epsilon<fltknd> = epsilon_float
 implement epsilon<dblknd> = epsilon_double
 implement epsilon<ldblknd> = epsilon_ldouble
-
-extern fn log2_ldouble : g0float ldblknd -<> g0float ldblknd = "mac#%"
-extern fn {tk : tkind} log2 : g0float tk -<> g0float tk
-implement log2<ldblknd> = log2_ldouble
-
-extern fn ceil_ldouble : g0float ldblknd -<> g0float ldblknd = "mac#%"
-extern fn {tk : tkind} ceil : g0float tk -<> g0float tk
-implement ceil<ldblknd> = ceil_ldouble
 
 implement {tk}
 itp_rootfinder$epsilon () =
@@ -80,7 +68,7 @@ itp_rootfinder$epsilon () =
 
 implement {}
 itp_rootfinder$extra_steps () =
-  0LL
+  0L
 
 implement {tk}
 itp_rootfinder$kappa1 () =
@@ -168,16 +156,39 @@ root_bracket_finder
       else
         zero
 
+    fn
+    ceil_log2 (x : real)
+        :<!exn> [i : pos] lint i =
+      let
+        fun
+        loop {i : pos}
+             {k : nat}
+             .<k>.
+             (i : lint i,
+              k : int k)
+            :<!exn> [i : pos] lint i =
+          if x <= g0i2f i then
+            i
+          else if k <= 1 then
+            raise_exception (itp_rootfinder_epsilon_too_small,
+                             "epsilon is too small for the bracket")
+          else
+            loop {2 * i} {k - 1} (i + i, pred k)
+
+        prval () = lemma_sizeof {lint} ()
+      in
+        loop (1L, sz2i (i2sz 8 * sizeof<lint>))
+      end
+
     val one_plus_phi =
       i2f (PHI_DENOMINATOR + PHI_NUMERATOR) / i2f PHI_DENOMINATOR
 
     val eps = itp_rootfinder$epsilon ()
     val two_eps = eps + eps
 
-    val nhalf : llint =
-      g0f2i (ceil (log2 (g0f2f ((b - a) / two_eps))))
+    val nbisect = ceil_log2 ((b - a) / two_eps)
     val n0 = itp_rootfinder$extra_steps ()
-    val n_max = nhalf + n0
+    val n_max = nbisect + n0
 
     val ya = itp_rootfinder$func a
     and yb = itp_rootfinder$func b
