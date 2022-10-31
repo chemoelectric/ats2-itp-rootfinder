@@ -48,38 +48,6 @@ macdef raise_exception (kind, message) =
 typedef integer (i : int) = lint i
 typedef Integer = [i : int] integer i
 
-extern prfn
-lemma_square_is_gte :
-  {i : int} () -<prf> [i <= i * i] void
-
-primplement
-lemma_square_is_gte {i} () =
-  sif i <= 0 then
-    mul_lte_lte_gte {i, i} ()
-  else
-    let
-      prfun
-      loop {k : pos | k <= i; k <= k * k}
-           .<i - k>.
-           (pf : MUL (k, k, k * k))
-          :<prf> [i <= i * i]
-                 MUL (i, i, i * i) =
-        sif k == i then
-          let
-            prval () = mul_isfun (pf, mul_make {i, i} ())
-          in
-            pf
-          end
-        else
-          let
-            prval pf1 = mul_expand_linear {1, 1} {1, 1} pf
-          in
-            loop {k + 1} pf1
-          end
-    in
-      mul_elim (loop {1} (mul_make {1, 1} ()))
-    end
-
 (* The Golden Ratio, (1 + √5)/2, rounded down by about
    0.00003398875. *)
 #define PHI_NUMERATOR 1618
@@ -109,23 +77,21 @@ implement rootfinder$g0float_pow<ldblknd> = g0float_pow_ldouble
 
 (*------------------------------------------------------------------*)
 
-(* Integer power of two, by the squaring method. *)
-fn {tk : tkind}
-g1int_pow2 {k : nat}
-           (k : g1int (tk, k))
-    :<> [pow : pos] g1int (tk, pow) =
+(* Power of two, by the squaring method. *)
+fn {tki, tkf : tkind}
+g1int_g0float_pow2 {k : nat}
+                   (k : g1int (tki, k))
+    :<> g0float tkf =
   let
     fun
-    loop {b    : int | 2 <= b}
-         {i    : nat}
-         {pow0 : pos}
+    loop
+         {i : nat}
          .<i>.
-         (b     : g1int (tk, b),
-          i     : g1int (tk, i),
-          accum : g1int (tk, pow0))
-        :<> [pow1 : pos] g1int (tk, pow1) =
+         (b     : g0float tkf,
+          i     : g1int (tki, i),
+          accum : g0float tkf)
+        :<> g0float tkf =
       let
-        prval () = lemma_square_is_gte {b} ()
         val ihalf = half i
       in
         if ihalf + ihalf = i then
@@ -136,9 +102,7 @@ g1int_pow2 {k : nat}
               loop (b * b, ihalf, accum)
           end
         else
-          let
-            prval () = mul_pos_pos_pos (mul_make {pow0, b} ())
-          in
+          begin
             if ihalf = g1i2i 0 then
               accum * b
             else
@@ -146,7 +110,7 @@ g1int_pow2 {k : nat}
           end
       end
   in
-    loop (g1i2i 2, k, g1i2i 1)
+    loop (g0i2f 2, k, g0i2f 1)
   end
 
 (*------------------------------------------------------------------*)
@@ -245,11 +209,11 @@ root_bracket_finder
     val one_plus_phi =
       i2f (PHI_DENOMINATOR + PHI_NUMERATOR) / i2f PHI_DENOMINATOR
 
-    val eps = rootfinder$epsilon ()
+    val eps = rootfinder$epsilon<tk> ()
     val two_eps = eps + eps
 
     val nbisect = ceil_log2 ((b - a) / two_eps)
-    val n0 = rootfinder$extra_steps ()
+    val n0 = rootfinder$extra_steps<> ()
     val n_max = nbisect + g1i2i n0
 
     val kappa1 = rootfinder$kappa1 ()
@@ -269,41 +233,43 @@ root_bracket_finder
     and sigma_yb = sign yb
 
     fun
-    loop {pow2 : pos}
-         .<pow2>.
-         (pow2 : integer pow2,
+    loop {n : nat}
+         .<n>.
+         (n    : integer n,
           a    : real,
           b    : real,
           ya   : real,
           yb   : real)
         :<!exn> @(real, real) =
-      if pow2 = g1i2i 1 then
+      if n = g1i2i 0 then
         @(a, b)
       else if b - a <= two_eps then
         @(a, b)
       else
         let
+          val two_raised_n = g1int_g0float_pow2 n
+
           val b_sub_a = b - a
           val half_of_b_sub_a = (b - a) / i2f 2
 
           val xbisect = a + half_of_b_sub_a
-          
+
           (* xf – interpolation by regula falsi. *)
           val yb_sub_ya = yb - ya
           val xf = ((yb / yb_sub_ya) * a) - ((ya / yb_sub_ya) * b)
 
           val delta = kappa1 * abs (real_pow (b_sub_a, kappa2))
           val xbisect_sub_xf = xbisect - xf
-          val sigma = sign (xbisect_sub_xf)
+          val sigma = sign xbisect_sub_xf
 
           (* xt – the ‘truncation’ of xf. *)
           val xt =
-            if delta <= abs (xbisect - xf) then
+            if delta <= abs xbisect_sub_xf then
               xf + apply_sign (sigma, delta)
             else
               xbisect
 
-          val r = (g0i2f pow2 * eps) - half_of_b_sub_a
+          val r = (two_raised_n * eps) - half_of_b_sub_a
 
           (* xp – the projection of xt onto [x½-r,x½+r]. *)
           val xp =
@@ -314,13 +280,14 @@ root_bracket_finder
 
           val yp = rootfinder$func xp
           val sigma_yp = sign yp
+
         in
           if sigma_yp = sigma_ya then
             (* yp has the same sign as ya. Make it the new ya. *)
-            loop (half pow2, xp, b, yp, yb)
+            loop (pred n, xp, b, yp, yb)
           else if sigma_yp = sigma_yb then
             (* yp has the same sign as yb. Make it the new yb. *)
-            loop (half pow2, a, xp, ya, yp)
+            loop (pred n, a, xp, ya, yp)
           else
             (* yp is zero. *)
             @(xp, xp)
@@ -333,7 +300,7 @@ root_bracket_finder
     else if 0 < sigma_ya * sigma_yb then
       raise_exception rootfinder_root_not_bracketed
     else
-      loop (g1int_pow2 n_max, a, b, ya, yb)
+      loop (n_max, a, b, ya, yb)
   end
 
 (*------------------------------------------------------------------*)
