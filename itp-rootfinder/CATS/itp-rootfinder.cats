@@ -24,40 +24,43 @@
 
 #define ats2_itp_rootfinder_inline ATSinline ()
 
-ats2_itp_rootfinder_inline atstype_llint
-ats2_itp_rootfinder_g0float2int_ldouble_llint (atstype_ldouble x)
-{
-  return (atstype_llint) x;
-}
-
 ats2_itp_rootfinder_inline atstype_float
-ats2_itp_rootfinder_epsilon_float (void)
+ats2_itp_rootfinder_g0float_epsilon_float (void)
 {
   return FLT_EPSILON;
 }
 
 ats2_itp_rootfinder_inline atstype_double
-ats2_itp_rootfinder_epsilon_double (void)
+ats2_itp_rootfinder_g0float_epsilon_double (void)
 {
   return DBL_EPSILON;
 }
 
 ats2_itp_rootfinder_inline atstype_ldouble
-ats2_itp_rootfinder_epsilon_ldouble (void)
+ats2_itp_rootfinder_g0float_epsilon_ldouble (void)
 {
   return LDBL_EPSILON;
 }
 
-ats2_itp_rootfinder_inline atstype_ldouble
-ats2_itp_rootfinder_log2_ldouble (atstype_ldouble x)
+ats2_itp_rootfinder_inline atstype_float
+ats2_itp_rootfinder_g0float_pow_float (atstype_float x,
+                                       atstype_float y)
 {
-  return log2l (x);
+  return powf (x, y);
+}
+
+ats2_itp_rootfinder_inline atstype_double
+ats2_itp_rootfinder_g0float_pow_double (atstype_double x,
+                                        atstype_double y)
+{
+  return pow (x, y);
 }
 
 ats2_itp_rootfinder_inline atstype_ldouble
-ats2_itp_rootfinder_ceil_ldouble (atstype_ldouble x)
+ats2_itp_rootfinder_g0float_pow_ldouble (atstype_ldouble x,
+                                         atstype_ldouble y)
 {
-  return ceill (x);
+  return powl (x, y);
 }
 
 #endif /* ATS2_ITP_ROOTFINDER_CATS__HEADER_GUARD__ */

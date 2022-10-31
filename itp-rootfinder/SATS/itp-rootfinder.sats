@@ -37,34 +37,54 @@ Reference:
 %}
 
 datatype itp_rootfinder_exc_kind =
+| itp_rootfinder_epsilon_too_small
+| itp_rootfinder_kappa1_not_positive
+| itp_rootfinder_kappa2_out_of_range
 | itp_rootfinder_root_not_bracketed
 
 exception itp_rootfinder_exc of
-  (string, itp_rootfinder_exc_kind, string)
+  (string, itp_rootfinder_exc_kind)
 
-(* The tolerance for terminating the algorithm. *)
+(* The tolerance for terminating the algorithm. The current default is
+   1000 times the "epsilon" for g0float(tk). *)
 fn {tk : tkind}
 itp_rootfinder$epsilon :
-  () -<> g0float tk
+  () -> g0float tk
 
 (* Increase itp_rootfinder$extra_steps above zero, if you wish to try
    to speed up convergence, at the expense of that many more steps in
    the worst case. *)
 fn {}
 itp_rootfinder$extra_steps :
-  () -<> [n0 : nat] llint n0
+  () -> [n0 : nat] lint n0
 
-(* A positive value. *)
+(* A positive value. The default is 1/10. *)
 fn {tk : tkind}
 itp_rootfinder$kappa1 :
-  () -<> g0float tk
+  () -> g0float tk
 
-(* A value between 1 and 2618/1000, inclusive. *)
+(* A value between 1 and 2618/1000, inclusive. The default is 2. *)
 fn {tk : tkind}
 itp_rootfinder$kappa2 :
-  () -<> g0float tk
+  () -> g0float tk
 
 (* The function to evaluate. *)
 fn {tk : tkind}
 itp_rootfinder$func :
   g0float tk -> g0float tk
+
+(* If necessary, implement itp_rootfinder$g0float_pow<tk>(x, y) as x
+   raised to the power y for your typekind. The value of x will be
+   positive, and that of y will be kappa2. The function may already be
+   implemented for your typekind. *)
+fn {tk : tkind}
+itp_rootfinder$g0float_pow :
+  (g0float tk, g0float tk) -> g0float tk
+
+(* If necessary, implement itp_rootfinder$g0float_epsilon<tk>() as the
+   "epsilon" for your typekind. The function may already be
+   implemented for your typekind, and is not used if you implement
+   your own itp_rootfinder$epsilon<tk>(). *)
+fn {tk : tkind}
+itp_rootfinder$g0float_epsilon :
+  () -<> g0float tk

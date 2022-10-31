@@ -54,31 +54,29 @@ macdef raise_exception (kind, message) =
 #define PHI_NUMERATOR 1618
 #define PHI_DENOMINATOR 1000
 
-extern fn epsilon_float : () -<> g0float fltknd = "mac#%"
-extern fn epsilon_double : () -<> g0float dblknd = "mac#%"
-extern fn epsilon_ldouble : () -<> g0float ldblknd = "mac#%"
-extern fn {tk : tkind} epsilon : () -<> g0float tk
-implement epsilon<fltknd> = epsilon_float
-implement epsilon<dblknd> = epsilon_double
-implement epsilon<ldblknd> = epsilon_ldouble
+extern fn g0float_epsilon_float : () -<> g0float fltknd = "mac#%"
+extern fn g0float_epsilon_double : () -<> g0float dblknd = "mac#%"
+extern fn g0float_epsilon_ldouble : () -<> g0float ldblknd = "mac#%"
+implement itp_rootfinder$g0float_epsilon<fltknd> = g0float_epsilon_float
+implement itp_rootfinder$g0float_epsilon<dblknd> = g0float_epsilon_double
+implement itp_rootfinder$g0float_epsilon<ldblknd> = g0float_epsilon_ldouble
 
-extern fn pow_float :
+extern fn g0float_pow_float :
   (g0float fltknd, g0float fltknd) -<> g0float fltknd = "mac#%"
-extern fn pow_double :
+extern fn g0float_pow_double :
   (g0float dblknd, g0float dblknd) -<> g0float dblknd = "mac#%"
-extern fn pow_ldouble :
+extern fn g0float_pow_ldouble :
   (g0float ldblknd, g0float ldblknd) -<> g0float ldblknd = "mac#%"
-extern fn {tk : tkind} pow : (g0float tk, g0float tk) -<> g0float tk
-implement pow<fltknd> = pow_float
-implement pow<dblknd> = pow_double
-implement pow<ldblknd> = pow_ldouble
+implement itp_rootfinder$g0float_pow<fltknd> = g0float_pow_float
+implement itp_rootfinder$g0float_pow<dblknd> = g0float_pow_double
+implement itp_rootfinder$g0float_pow<ldblknd> = g0float_pow_ldouble
 
 implement {tk}
 itp_rootfinder$epsilon () =
   let
     macdef i2f = g0int2float<intknd,tk>
   in
-    i2f 1000 * epsilon<tk> ()
+    i2f 1000 * itp_rootfinder$g0float_epsilon<tk> ()
   end
 
 implement {}
