@@ -33,7 +33,7 @@
 #
 
 # aminclude_static.am generated automatically by Autoconf
-# from AX_AM_MACROS_STATIC on Sun Oct 30 13:45:11 CDT 2022
+# from AX_AM_MACROS_STATIC on Mon Oct 31 15:11:46 CDT 2022
 
 
 
@@ -113,8 +113,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS =
-EXTRA_PROGRAMS = list-ats-dependencies$(EXEEXT)
-TESTS =
+EXTRA_PROGRAMS = $(am__EXEEXT_1) list-ats-dependencies$(EXEEXT)
+TESTS = tests/test1$(EXEEXT)
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_ac_append_to_file.m4 \
@@ -140,6 +140,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
 mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES = list-ats-dependencies.dats
 CONFIG_CLEAN_VPATH_FILES =
+am__EXEEXT_1 = tests/test1$(EXEEXT)
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(libdir)" \
 	"$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(pkgincludedir)" \
 	"$(DESTDIR)$(pkgincludedir)"
@@ -187,6 +188,8 @@ am__v_lt_1 =
 nodist_list_ats_dependencies_OBJECTS = list_ats_dependencies-list-ats-dependencies_depsprog.$(OBJEXT)
 list_ats_dependencies_OBJECTS =  \
 	$(nodist_list_ats_dependencies_OBJECTS)
+nodist_tests_test1_OBJECTS = tests/test1-test1_tests.$(OBJEXT)
+tests_test1_OBJECTS = $(nodist_tests_test1_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -204,7 +207,8 @@ depcomp = $(SHELL) $(top_srcdir)/build-aux/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/list_ats_dependencies-list-ats-dependencies_depsprog.Po \
 	itp-rootfinder/DATS/$(DEPDIR)/itp-rootfinder_dats.Plo \
-	itp-rootfinder/SATS/$(DEPDIR)/itp-rootfinder_sats.Plo
+	itp-rootfinder/SATS/$(DEPDIR)/itp-rootfinder_sats.Plo \
+	tests/$(DEPDIR)/test1-test1_tests.Po
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -225,7 +229,8 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(nodist_libats2_itp_rootfinder_la_SOURCES) \
-	$(nodist_list_ats_dependencies_SOURCES)
+	$(nodist_list_ats_dependencies_SOURCES) \
+	$(nodist_tests_test1_SOURCES)
 DIST_SOURCES =
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
@@ -412,12 +417,8 @@ AM_TESTSUITE_SUMMARY_HEADER = ' for $(PACKAGE_STRING)'
 RECHECK_LOGS = $(TEST_LOGS)
 TEST_SUITE_LOG = test-suite.log
 TEST_EXTENSIONS = @EXEEXT@ .test
-am__test_logs1 = $(TESTS:=.log)
-am__test_logs2 = $(am__test_logs1:@EXEEXT@.log=.log)
-TEST_LOGS = $(am__test_logs2:.test.log=.log)
-TEST_LOG_DRIVER = $(SHELL) $(top_srcdir)/build-aux/test-driver
-TEST_LOG_COMPILE = $(TEST_LOG_COMPILER) $(AM_TEST_LOG_FLAGS) \
-	$(TEST_LOG_FLAGS)
+LOG_DRIVER = $(SHELL) $(top_srcdir)/build-aux/test-driver
+LOG_COMPILE = $(LOG_COMPILER) $(AM_LOG_FLAGS) $(LOG_FLAGS)
 am__set_b = \
   case '$@' in \
     */*) \
@@ -428,6 +429,12 @@ am__set_b = \
     *) \
       b='$*';; \
   esac
+am__test_logs1 = $(TESTS:=.log)
+am__test_logs2 = $(am__test_logs1:@EXEEXT@.log=.log)
+TEST_LOGS = $(am__test_logs2:.test.log=.log)
+TEST_LOG_DRIVER = $(SHELL) $(top_srcdir)/build-aux/test-driver
+TEST_LOG_COMPILE = $(TEST_LOG_COMPILER) $(AM_TEST_LOG_FLAGS) \
+	$(TEST_LOG_FLAGS)
 am__DIST_COMMON = $(srcdir)/Makefile.in \
 	$(srcdir)/list-ats-dependencies.dats.in \
 	$(top_srcdir)/aminclude_static.am \
@@ -625,9 +632,10 @@ AUTOMAKE_OPTIONS = foreign subdir-objects -Wno-portability
 @CODE_COVERAGE_ENABLED_TRUE@code_coverage_sanitize = $(subst -,_,$(subst .,_,$(1)))
 @CODE_COVERAGE_ENABLED_TRUE@AM_DISTCHECK_CONFIGURE_FLAGS := $(AM_DISTCHECK_CONFIGURE_FLAGS) --disable-code-coverage
 EXTRA_DIST = $(srcdir)/silent-rules.mk COPYING INSTALL README AUTHORS \
-	list-ats-dependencies.dats
+	tests/test1.dats list-ats-dependencies.dats
 MOSTLYCLEANFILES = 
-CLEANFILES = list-ats-dependencies list-ats-dependencies_depsprog.c
+CLEANFILES = $(TESTS) list-ats-dependencies \
+	list-ats-dependencies_depsprog.c
 DISTCLEANFILES = Makefile GNUmakefile
 BUILT_SOURCES = 
 AM_M4FLAGS = 
@@ -648,17 +656,6 @@ CODE_COVERAGE_IGNORE_PATTERN = /usr/include/* /usr/include/*/* \
 	$(PATSHOME)/ccomp/runtime/* $(PATSHOME)/prelude/CATS/*
 
 #--------------------------------------------------------------------------
-
-# TOTAL_M4FLAGS =
-# TOTAL_M4FLAGS += $(AM_M4FLAGS)
-# TOTAL_M4FLAGS += $(M4FLAGS)
-# TOTAL_M4FLAGS += $(XM4FLAGS)
-
-# %.dats: %.dats.m4 common-macros.m4 timsort-macros.m4
-# 	@$(MKDIR_P) $(@D)
-# 	$(call v,M4)$(M4) $(TOTAL_M4FLAGS) $(<) > $(@)
-
-#--------------------------------------------------------------------------
 PATSOPT_DEPS = 
 AM_PATSOPTFLAGS = -IATS $(builddir) -IATS $(srcdir)
 TOTAL_PATSOPTFLAGS = $(AM_PATSOPTFLAGS) $(PATSOPTFLAGS) \
@@ -673,8 +670,13 @@ nobase_dist_pkginclude_HEADERS = $(ITP_ROOTFINDER_SATS) \
 	$(ITP_ROOTFINDER_DATS) $(ITP_ROOTFINDER_CATS)
 nodist_libats2_itp_rootfinder_la_SOURCES = $(ITP_ROOTFINDER_SATS_C) \
 	$(ITP_ROOTFINDER_DATS_C)
-nodist_libats2_itp_rootfinder_la_DEPENDENCIES =  \
-	$(ITP_ROOTFINDER_CATS)
+TESTS_DEPS = itp-rootfinder/HATS/itp-rootfinder.hats \
+	itp-rootfinder/SATS/itp-rootfinder.sats \
+	itp-rootfinder/DATS/itp-rootfinder.dats
+nodist_tests_test1_SOURCES = tests/test1_tests.c
+tests_test1_DEPENDENCIES = $(TESTS_DEPS)
+tests_test1_CPPFLAGS = $(AM_CPPFLAGS) -DATS_MEMALLOC_LIBC
+tests_test1_LDADD = libats2-itp-rootfinder.la
 nodist_list_ats_dependencies_SOURCES =  \
 	list-ats-dependencies_depsprog.c
 list_ats_dependencies_CPPFLAGS = $(AM_CPPFLAGS) -DATS_MEMALLOC_LIBC
@@ -831,6 +833,18 @@ libats2-itp-rootfinder.la: $(libats2_itp_rootfinder_la_OBJECTS) $(libats2_itp_ro
 list-ats-dependencies$(EXEEXT): $(list_ats_dependencies_OBJECTS) $(list_ats_dependencies_DEPENDENCIES) $(EXTRA_list_ats_dependencies_DEPENDENCIES) 
 	@rm -f list-ats-dependencies$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(list_ats_dependencies_OBJECTS) $(list_ats_dependencies_LDADD) $(LIBS)
+tests/$(am__dirstamp):
+	@$(MKDIR_P) tests
+	@: > tests/$(am__dirstamp)
+tests/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) tests/$(DEPDIR)
+	@: > tests/$(DEPDIR)/$(am__dirstamp)
+tests/test1-test1_tests.$(OBJEXT): tests/$(am__dirstamp) \
+	tests/$(DEPDIR)/$(am__dirstamp)
+
+tests/test1$(EXEEXT): $(tests_test1_OBJECTS) $(tests_test1_DEPENDENCIES) $(EXTRA_tests_test1_DEPENDENCIES) tests/$(am__dirstamp)
+	@rm -f tests/test1$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(tests_test1_OBJECTS) $(tests_test1_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -838,6 +852,7 @@ mostlyclean-compile:
 	-rm -f itp-rootfinder/DATS/*.lo
 	-rm -f itp-rootfinder/SATS/*.$(OBJEXT)
 	-rm -f itp-rootfinder/SATS/*.lo
+	-rm -f tests/*.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
@@ -845,6 +860,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/list_ats_dependencies-list-ats-dependencies_depsprog.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@itp-rootfinder/DATS/$(DEPDIR)/itp-rootfinder_dats.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@itp-rootfinder/SATS/$(DEPDIR)/itp-rootfinder_sats.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/test1-test1_tests.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -890,6 +906,20 @@ list_ats_dependencies-list-ats-dependencies_depsprog.obj: list-ats-dependencies_
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(list_ats_dependencies_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o list_ats_dependencies-list-ats-dependencies_depsprog.obj `if test -f 'list-ats-dependencies_depsprog.c'; then $(CYGPATH_W) 'list-ats-dependencies_depsprog.c'; else $(CYGPATH_W) '$(srcdir)/list-ats-dependencies_depsprog.c'; fi`
 
+tests/test1-test1_tests.o: tests/test1_tests.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_test1_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tests/test1-test1_tests.o -MD -MP -MF tests/$(DEPDIR)/test1-test1_tests.Tpo -c -o tests/test1-test1_tests.o `test -f 'tests/test1_tests.c' || echo '$(srcdir)/'`tests/test1_tests.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test1-test1_tests.Tpo tests/$(DEPDIR)/test1-test1_tests.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tests/test1_tests.c' object='tests/test1-test1_tests.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_test1_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tests/test1-test1_tests.o `test -f 'tests/test1_tests.c' || echo '$(srcdir)/'`tests/test1_tests.c
+
+tests/test1-test1_tests.obj: tests/test1_tests.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_test1_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tests/test1-test1_tests.obj -MD -MP -MF tests/$(DEPDIR)/test1-test1_tests.Tpo -c -o tests/test1-test1_tests.obj `if test -f 'tests/test1_tests.c'; then $(CYGPATH_W) 'tests/test1_tests.c'; else $(CYGPATH_W) '$(srcdir)/tests/test1_tests.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/test1-test1_tests.Tpo tests/$(DEPDIR)/test1-test1_tests.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tests/test1_tests.c' object='tests/test1-test1_tests.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_test1_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tests/test1-test1_tests.obj `if test -f 'tests/test1_tests.c'; then $(CYGPATH_W) 'tests/test1_tests.c'; else $(CYGPATH_W) '$(srcdir)/tests/test1_tests.c'; fi`
+
 mostlyclean-libtool:
 	-rm -f *.lo
 
@@ -897,6 +927,7 @@ clean-libtool:
 	-rm -rf .libs _libs
 	-rm -rf itp-rootfinder/DATS/.libs itp-rootfinder/DATS/_libs
 	-rm -rf itp-rootfinder/SATS/.libs itp-rootfinder/SATS/_libs
+	-rm -rf tests/.libs tests/_libs
 
 distclean-libtool:
 	-rm -f libtool config.lt
@@ -1170,6 +1201,13 @@ recheck: all
 	        am__force_recheck=am--force-recheck \
 	        TEST_LOGS="$$log_list"; \
 	exit $$?
+tests/test1.log: tests/test1$(EXEEXT)
+	@p='tests/test1$(EXEEXT)'; \
+	b='tests/test1'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 .test.log:
 	@p='$<'; \
 	$(am__set_b); \
@@ -1406,6 +1444,8 @@ distclean-generic:
 	-rm -f itp-rootfinder/DATS/$(am__dirstamp)
 	-rm -f itp-rootfinder/SATS/$(DEPDIR)/$(am__dirstamp)
 	-rm -f itp-rootfinder/SATS/$(am__dirstamp)
+	-rm -f tests/$(DEPDIR)/$(am__dirstamp)
+	-rm -f tests/$(am__dirstamp)
 	-test -z "$(DISTCLEANFILES)" || rm -f $(DISTCLEANFILES)
 
 maintainer-clean-generic:
@@ -1422,6 +1462,7 @@ distclean: distclean-am
 		-rm -f ./$(DEPDIR)/list_ats_dependencies-list-ats-dependencies_depsprog.Po
 	-rm -f itp-rootfinder/DATS/$(DEPDIR)/itp-rootfinder_dats.Plo
 	-rm -f itp-rootfinder/SATS/$(DEPDIR)/itp-rootfinder_sats.Plo
+	-rm -f tests/$(DEPDIR)/test1-test1_tests.Po
 	-rm -f GNUmakefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-libtool distclean-local distclean-tags
@@ -1474,6 +1515,7 @@ maintainer-clean: maintainer-clean-am
 		-rm -f ./$(DEPDIR)/list_ats_dependencies-list-ats-dependencies_depsprog.Po
 	-rm -f itp-rootfinder/DATS/$(DEPDIR)/itp-rootfinder_dats.Plo
 	-rm -f itp-rootfinder/SATS/$(DEPDIR)/itp-rootfinder_sats.Plo
+	-rm -f tests/$(DEPDIR)/test1-test1_tests.Po
 	-rm -f GNUmakefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
@@ -1678,17 +1720,20 @@ ats-includes-distclean:
 	@$(MKDIR_P) $(@D)
 	$(call v,PATSOPT)$(PATSOPT) -o $(@) $(TOTAL_PATSOPTFLAGS) -d $(<)
 
+$(ITP_ROOTFINDER_SATS_C/.c/.$(OBJEXT))
+
+# Make the %_tests.o files depend on %_tests.c files.
+$(foreach source_file, \
+	$(nodist_libats2_itp_rootfinder_la_SOURCES), \
+	$(eval $(patsubst %.c,%.$(OBJEXT),$(source_file)): $(source_file)))
+
 xats-c-clean:
 	-rm -f itp-rootfinder/SATS/*_sats.c
 	-rm -f itp-rootfinder/DATS/*_dats.c
 
-#--------------------------------------------------------------------------
-#
-# FIXME: Tests will go here.
-#
-
 tests-clean:
 	-rm -f tests/*.$(OBJEXT)
+	-rm -f $(addsuffix tests/$(TESTS),_tests.c)
 
 #--------------------------------------------------------------------------
 

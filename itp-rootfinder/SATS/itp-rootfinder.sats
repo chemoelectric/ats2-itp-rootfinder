@@ -98,54 +98,63 @@ rootfinder$func :
 (*------------------------------------------------------------------*)
 
 (* Interfaces that take a function or closure instead of one having to
-   implement rootfinder$func. *)
+   implement rootfinder$func.
+
+   Example calls:   
+      rootfinder<tk> (a, b, f)
+      rootfinder<tk> (a, b, f, eps)
+*)
 
 fn {tk : tkind}
 rootbracketer_fun_with_template_epsilon :
-  (g0float tk -< !exn > g0float tk,
-   g0float tk, g0float tk) -< !exn >
+  (g0float tk, g0float tk,
+   g0float tk -< !exn > g0float tk) -< !exn >
     @(g0float tk, g0float tk)
 
 fn {tk : tkind}
 rootbracketer_fun_with_given_epsilon :
-  (g0float tk -< !exn > g0float tk,
-   g0float tk, g0float tk, g0float tk) -< !exn >
+  (g0float tk, g0float tk,
+   g0float tk -< !exn > g0float tk,
+   g0float tk) -< !exn >
     @(g0float tk, g0float tk)
 
 fn {tk : tkind}
 rootfinder_fun_with_template_epsilon :
-  (g0float tk -< !exn > g0float tk,
-   g0float tk, g0float tk) -< !exn >
+  (g0float tk, g0float tk,
+   g0float tk -< !exn > g0float tk) -< !exn >
     g0float tk
 
 fn {tk : tkind}
 rootfinder_fun_with_given_epsilon :
-  (g0float tk -< !exn > g0float tk,
-   g0float tk, g0float tk, g0float tk) -< !exn >
+  (g0float tk, g0float tk,
+   g0float tk -< !exn > g0float tk,
+   g0float tk) -< !exn >
     g0float tk
 
 fn {tk : tkind}
 rootbracketer_cloref_with_template_epsilon :
-  (g0float tk -< !exn,cloref > g0float tk,
-   g0float tk, g0float tk) -< !exn >
+  (g0float tk, g0float tk,
+   g0float tk -< !exn,cloref > g0float tk) -< !exn >
     @(g0float tk, g0float tk)
 
 fn {tk : tkind}
 rootbracketer_cloref_with_given_epsilon :
-  (g0float tk -< !exn,cloref > g0float tk,
-   g0float tk, g0float tk, g0float tk) -< !exn >
+  (g0float tk, g0float tk,
+   g0float tk -< !exn,cloref > g0float tk,
+   g0float tk) -< !exn >
     @(g0float tk, g0float tk)
 
 fn {tk : tkind}
 rootfinder_cloref_with_template_epsilon :
-  (g0float tk -< !exn,cloref > g0float tk,
-   g0float tk, g0float tk) -< !exn >
+  (g0float tk, g0float tk,
+   g0float tk -< !exn,cloref > g0float tk) -< !exn >
     g0float tk
 
 fn {tk : tkind}
 rootfinder_cloref_with_given_epsilon :
-  (g0float tk -< !exn,cloref > g0float tk,
-   g0float tk, g0float tk, g0float tk) -< !exn >
+  (g0float tk, g0float tk,
+   g0float tk -< !exn,cloref > g0float tk,
+   g0float tk) -< !exn >
     g0float tk
 
 overload rootbracketer_fun with

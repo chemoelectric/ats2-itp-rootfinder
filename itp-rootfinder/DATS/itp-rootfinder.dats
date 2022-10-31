@@ -87,6 +87,8 @@ lemma_square_is_gte {i} () =
 
 (*------------------------------------------------------------------*)
 
+implement g1int2int<lintknd,lintknd> i = i
+
 extern fn g0float_epsilon_float : () -<> g0float fltknd = "mac#%"
 extern fn g0float_epsilon_double : () -<> g0float dblknd = "mac#%"
 extern fn g0float_epsilon_ldouble : () -<> g0float ldblknd = "mac#%"
@@ -380,7 +382,7 @@ rootfinder_with_given_epsilon (a, b, eps) =
 (*------------------------------------------------------------------*)
 
 implement {tk}
-rootbracketer_fun_with_template_epsilon (f, a, b) =
+rootbracketer_fun_with_template_epsilon (a, b, f) =
   let
     implement rootfinder$func<tk> x = f x
   in
@@ -388,7 +390,7 @@ rootbracketer_fun_with_template_epsilon (f, a, b) =
   end
 
 implement {tk}
-rootbracketer_fun_with_given_epsilon (f, a, b, eps) =
+rootbracketer_fun_with_given_epsilon (a, b, f, eps) =
   let
     implement rootfinder$func<tk> x = f x
   in
@@ -396,7 +398,7 @@ rootbracketer_fun_with_given_epsilon (f, a, b, eps) =
   end
 
 implement {tk}
-rootfinder_fun_with_template_epsilon (f, a, b) =
+rootfinder_fun_with_template_epsilon (a, b, f) =
   let
     implement rootfinder$func<tk> x = f x
   in
@@ -404,7 +406,7 @@ rootfinder_fun_with_template_epsilon (f, a, b) =
   end
 
 implement {tk}
-rootfinder_fun_with_given_epsilon (f, a, b, eps) =
+rootfinder_fun_with_given_epsilon (a, b, f, eps) =
   let
     implement rootfinder$func<tk> x = f x
   in
@@ -412,7 +414,7 @@ rootfinder_fun_with_given_epsilon (f, a, b, eps) =
   end
 
 implement {tk}
-rootbracketer_cloref_with_template_epsilon (f, a, b) =
+rootbracketer_cloref_with_template_epsilon (a, b, f) =
   let
     implement rootfinder$func<tk> x = f x
   in
@@ -420,7 +422,7 @@ rootbracketer_cloref_with_template_epsilon (f, a, b) =
   end
 
 implement {tk}
-rootbracketer_cloref_with_given_epsilon (f, a, b, eps) =
+rootbracketer_cloref_with_given_epsilon (a, b, f, eps) =
   let
     implement rootfinder$func<tk> x = f x
   in
@@ -428,7 +430,7 @@ rootbracketer_cloref_with_given_epsilon (f, a, b, eps) =
   end
 
 implement {tk}
-rootfinder_cloref_with_template_epsilon (f, a, b) =
+rootfinder_cloref_with_template_epsilon (a, b, f) =
   let
     implement rootfinder$func<tk> x = f x
   in
@@ -436,7 +438,7 @@ rootfinder_cloref_with_template_epsilon (f, a, b) =
   end
 
 implement {tk}
-rootfinder_cloref_with_given_epsilon (f, a, b, eps) =
+rootfinder_cloref_with_given_epsilon (a, b, f, eps) =
   let
     implement rootfinder$func<tk> x = f x
   in

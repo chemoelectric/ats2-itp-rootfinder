@@ -72,17 +72,6 @@ distclean-local: code-coverage-dist-clean ats-includes-distclean
 
 #--------------------------------------------------------------------------
 
-# TOTAL_M4FLAGS =
-# TOTAL_M4FLAGS += $(AM_M4FLAGS)
-# TOTAL_M4FLAGS += $(M4FLAGS)
-# TOTAL_M4FLAGS += $(XM4FLAGS)
-
-# %.dats: %.dats.m4 common-macros.m4 timsort-macros.m4
-# 	@$(MKDIR_P) $(@D)
-# 	$(call v,M4)$(M4) $(TOTAL_M4FLAGS) $(<) > $(@)
-
-#--------------------------------------------------------------------------
-
 PATSOPT_DEPS =
 
 AM_PATSOPTFLAGS =
@@ -160,6 +149,8 @@ ITP_ROOTFINDER_DATS = itp-rootfinder/DATS/itp-rootfinder.dats
 ITP_ROOTFINDER_DATS_C = itp-rootfinder/DATS/itp-rootfinder_dats.c
 ITP_ROOTFINDER_CATS = itp-rootfinder/CATS/itp-rootfinder.cats
 
+$(ITP_ROOTFINDER_SATS_C/.c/.$(OBJEXT))
+
 nobase_dist_pkginclude_HEADERS =
 nobase_dist_pkginclude_HEADERS += $(ITP_ROOTFINDER_SATS)
 nobase_dist_pkginclude_HEADERS += $(ITP_ROOTFINDER_DATS)
@@ -168,8 +159,11 @@ nobase_dist_pkginclude_HEADERS += $(ITP_ROOTFINDER_CATS)
 nodist_libats2_itp_rootfinder_la_SOURCES =
 nodist_libats2_itp_rootfinder_la_SOURCES += $(ITP_ROOTFINDER_SATS_C)
 nodist_libats2_itp_rootfinder_la_SOURCES += $(ITP_ROOTFINDER_DATS_C)
-nodist_libats2_itp_rootfinder_la_DEPENDENCIES =
-nodist_libats2_itp_rootfinder_la_DEPENDENCIES += $(ITP_ROOTFINDER_CATS)
+
+# Make the %_tests.o files depend on %_tests.c files.
+$(foreach source_file, \
+	$(nodist_libats2_itp_rootfinder_la_SOURCES), \
+	$(eval $(patsubst %.c,%.$(OBJEXT),$(source_file)): $(source_file)))
 
 xats-c-clean:
 	-rm -f itp-rootfinder/SATS/*_sats.c
@@ -180,8 +174,25 @@ xats-c-clean:
 # FIXME: Tests will go here.
 #
 
+TESTS += tests/test1
+
+EXTRA_PROGRAMS += $(TESTS)
+
+TESTS_DEPS =
+TESTS_DEPS += itp-rootfinder/HATS/itp-rootfinder.hats
+TESTS_DEPS += itp-rootfinder/SATS/itp-rootfinder.sats
+TESTS_DEPS += itp-rootfinder/DATS/itp-rootfinder.dats
+
+EXTRA_DIST += tests/test1.dats
+nodist_tests_test1_SOURCES = tests/test1_tests.c
+tests_test1_DEPENDENCIES = $(TESTS_DEPS)
+tests_test1_CPPFLAGS = $(AM_CPPFLAGS) -DATS_MEMALLOC_LIBC
+tests_test1_LDADD = libats2-itp-rootfinder.la
+
 tests-clean:
 	-rm -f tests/*.$(OBJEXT)
+	-rm -f $(addsuffix tests/$(TESTS),_tests.c)
+CLEANFILES += $(TESTS)
 
 #--------------------------------------------------------------------------
 #
