@@ -48,9 +48,37 @@ macdef raise_exception (kind, message) =
 typedef integer (i : int) = lint i
 typedef Integer = [i : int] integer i
 
-extern praxi
+extern prfn
 lemma_square_is_gte :
   {i : int} () -<prf> [i <= i * i] void
+
+primplement
+lemma_square_is_gte {i} () =
+  sif i <= 0 then
+    mul_lte_lte_gte {i, i} ()
+  else
+    let
+      prfun
+      loop {k       : pos | k <= i; k <= k * k}
+           .<i - k>.
+           (pf : MUL (k, k, k * k))
+          :<prf> [i <= i * i]
+                 MUL (i, i, i * i) =
+        sif k == i then
+          let
+            prval () = mul_isfun (pf, mul_make {i, i} ())
+          in
+            pf
+          end
+        else
+          let
+            prval pf1 = mul_expand_linear {1, 1} {1, 1} pf
+          in
+            loop {k + 1} pf1
+          end
+    in
+      mul_elim (loop (mul_make {1, 1} ()))
+    end
 
 (* The Golden Ratio, (1 + √5)/2, rounded down by about
    0.00003398875. *)
