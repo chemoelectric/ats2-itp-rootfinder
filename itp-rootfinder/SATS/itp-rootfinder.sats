@@ -97,6 +97,79 @@ rootfinder$func :
 
 (*------------------------------------------------------------------*)
 
+(* Interfaces that take a function or closure instead of one having to
+   implement rootfinder$func. *)
+
+fn {tk : tkind}
+rootbracketer_fun_with_template_epsilon :
+  (g0float tk -< !exn > g0float tk,
+   g0float tk, g0float tk) -< !exn >
+    @(g0float tk, g0float tk)
+
+fn {tk : tkind}
+rootbracketer_fun_with_given_epsilon :
+  (g0float tk -< !exn > g0float tk,
+   g0float tk, g0float tk, g0float tk) -< !exn >
+    @(g0float tk, g0float tk)
+
+fn {tk : tkind}
+rootfinder_fun_with_template_epsilon :
+  (g0float tk -< !exn > g0float tk,
+   g0float tk, g0float tk) -< !exn >
+    g0float tk
+
+fn {tk : tkind}
+rootfinder_fun_with_given_epsilon :
+  (g0float tk -< !exn > g0float tk,
+   g0float tk, g0float tk, g0float tk) -< !exn >
+    g0float tk
+
+fn {tk : tkind}
+rootbracketer_cloref_with_template_epsilon :
+  (g0float tk -< !exn,cloref > g0float tk,
+   g0float tk, g0float tk) -< !exn >
+    @(g0float tk, g0float tk)
+
+fn {tk : tkind}
+rootbracketer_cloref_with_given_epsilon :
+  (g0float tk -< !exn,cloref > g0float tk,
+   g0float tk, g0float tk, g0float tk) -< !exn >
+    @(g0float tk, g0float tk)
+
+fn {tk : tkind}
+rootfinder_cloref_with_template_epsilon :
+  (g0float tk -< !exn,cloref > g0float tk,
+   g0float tk, g0float tk) -< !exn >
+    g0float tk
+
+fn {tk : tkind}
+rootfinder_cloref_with_given_epsilon :
+  (g0float tk -< !exn,cloref > g0float tk,
+   g0float tk, g0float tk, g0float tk) -< !exn >
+    g0float tk
+
+overload rootbracketer_fun with
+  rootbracketer_fun_with_template_epsilon
+overload rootbracketer_fun with
+  rootbracketer_fun_with_given_epsilon
+
+overload rootfinder_fun with
+  rootfinder_fun_with_template_epsilon
+overload rootfinder_fun with
+  rootfinder_fun_with_given_epsilon
+
+overload rootbracketer_cloref with
+  rootbracketer_cloref_with_template_epsilon
+overload rootbracketer_cloref with
+  rootbracketer_cloref_with_given_epsilon
+
+overload rootfinder_cloref with
+  rootfinder_cloref_with_template_epsilon
+overload rootfinder_cloref with
+  rootfinder_cloref_with_given_epsilon
+
+(*------------------------------------------------------------------*)
+
 (* The tolerance for terminating the algorithm. The current default is
    1000 times the "epsilon" for g0float(tk). *)
 fn {tk : tkind}
@@ -149,3 +222,4 @@ rootfinder$g0float_epsilon :
   () -<> g0float tk
 
 (*------------------------------------------------------------------*)
+

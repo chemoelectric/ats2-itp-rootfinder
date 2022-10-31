@@ -59,7 +59,7 @@ lemma_square_is_gte {i} () =
   else
     let
       prfun
-      loop {k       : pos | k <= i; k <= k * k}
+      loop {k : pos | k <= i; k <= k * k}
            .<i - k>.
            (pf : MUL (k, k, k * k))
           :<prf> [i <= i * i]
@@ -77,7 +77,7 @@ lemma_square_is_gte {i} () =
             loop {k + 1} pf1
           end
     in
-      mul_elim (loop (mul_make {1, 1} ()))
+      mul_elim (loop {1} (mul_make {1, 1} ()))
     end
 
 (* The Golden Ratio, (1 + √5)/2, rounded down by about
@@ -377,5 +377,71 @@ rootfinder_with_given_epsilon (a, b, eps) =
     a1 + ((b1 - a1) / i2f 2)
   end
 
+(*------------------------------------------------------------------*)
+
+implement {tk}
+rootbracketer_fun_with_template_epsilon (f, a, b) =
+  let
+    implement rootfinder$func<tk> x = f x
+  in
+    rootbracketer<tk> (a, b)
+  end
+
+implement {tk}
+rootbracketer_fun_with_given_epsilon (f, a, b, eps) =
+  let
+    implement rootfinder$func<tk> x = f x
+  in
+    rootbracketer<tk> (a, b, eps)
+  end
+
+implement {tk}
+rootfinder_fun_with_template_epsilon (f, a, b) =
+  let
+    implement rootfinder$func<tk> x = f x
+  in
+    rootfinder<tk> (a, b)
+  end
+
+implement {tk}
+rootfinder_fun_with_given_epsilon (f, a, b, eps) =
+  let
+    implement rootfinder$func<tk> x = f x
+  in
+    rootfinder<tk> (a, b, eps)
+  end
+
+implement {tk}
+rootbracketer_cloref_with_template_epsilon (f, a, b) =
+  let
+    implement rootfinder$func<tk> x = f x
+  in
+    rootbracketer<tk> (a, b)
+  end
+
+implement {tk}
+rootbracketer_cloref_with_given_epsilon (f, a, b, eps) =
+  let
+    implement rootfinder$func<tk> x = f x
+  in
+    rootbracketer<tk> (a, b, eps)
+  end
+
+implement {tk}
+rootfinder_cloref_with_template_epsilon (f, a, b) =
+  let
+    implement rootfinder$func<tk> x = f x
+  in
+    rootfinder<tk> (a, b)
+  end
+
+implement {tk}
+rootfinder_cloref_with_given_epsilon (f, a, b, eps) =
+  let
+    implement rootfinder$func<tk> x = f x
+  in
+    rootfinder<tk> (a, b, eps)
+  end
+  
 (*------------------------------------------------------------------*)
 
