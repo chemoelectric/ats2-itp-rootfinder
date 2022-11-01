@@ -260,7 +260,9 @@ rootbracketer_with_template_epsilon (a, b) =
           ya   : real,
           yb   : real)
         :<!exn> @(real, real) =
-      if (n = g1i2i 0) + (b - a <= two_eps) then
+      if n = g1i2i 0 then
+        @(a, b)
+      else if b - a <= two_eps then
         @(a, b)
       else
         let
