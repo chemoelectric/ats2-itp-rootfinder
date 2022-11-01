@@ -176,20 +176,28 @@ xats-c-clean:
 # FIXME: Tests will go here.
 #
 
-TESTS += tests/test1
-
-EXTRA_PROGRAMS += $(TESTS)
-
 TESTS_DEPS =
 TESTS_DEPS += itp-rootfinder/HATS/itp-rootfinder.hats
 TESTS_DEPS += itp-rootfinder/SATS/itp-rootfinder.sats
 TESTS_DEPS += itp-rootfinder/DATS/itp-rootfinder.dats
 
+TESTS += tests/test1
 EXTRA_DIST += tests/test1.dats
 nodist_tests_test1_SOURCES = tests/test1_tests.c
 tests_test1_DEPENDENCIES = $(TESTS_DEPS)
 tests_test1_CPPFLAGS = $(AM_CPPFLAGS) -DATS_MEMALLOC_LIBC
 tests_test1_LDADD = libats2-itp-rootfinder.la -lm
+
+if HAVE_INT128
+TESTS += tests/test2
+EXTRA_DIST += tests/test2.dats
+nodist_tests_test2_SOURCES = tests/test2_tests.c
+tests_test2_DEPENDENCIES = $(TESTS_DEPS)
+tests_test2_CPPFLAGS = $(AM_CPPFLAGS) -DATS_MEMALLOC_LIBC
+tests_test2_LDADD = libats2-itp-rootfinder.la -lm
+endif HAVE_INT128
+
+EXTRA_PROGRAMS += $(TESTS)
 
 tests-clean:
 	-rm -f tests/*.$(OBJEXT)

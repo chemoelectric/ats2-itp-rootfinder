@@ -85,6 +85,9 @@ PKG_INSTALLDIR
 #
 # Checks for typedefs, structures, and compiler characteristics.
 
+AC_CHECK_TYPE([__int128])
+AM_CONDITIONAL([HAVE_INT128],[test "${ac_cv_type___int128}" = yes])
+
 #--------------------------------------------------------------------------
 #
 # Checks for library functions.
