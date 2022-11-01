@@ -25,6 +25,42 @@
 #define ats2_itp_rootfinder_inline ATSinline ()
 
 ats2_itp_rootfinder_inline atstype_float
+ats2_itp_rootfinder_g0int2float_int_float (atstype_int x)
+{
+  return x;
+}
+
+ats2_itp_rootfinder_inline atstype_float
+ats2_itp_rootfinder_g0int2float_lint_float (atstype_lint x)
+{
+  return x;
+}
+
+ats2_itp_rootfinder_inline atstype_double
+ats2_itp_rootfinder_g0int2float_int_double (atstype_int x)
+{
+  return x;
+}
+
+ats2_itp_rootfinder_inline atstype_double
+ats2_itp_rootfinder_g0int2float_lint_double (atstype_lint x)
+{
+  return x;
+}
+
+ats2_itp_rootfinder_inline atstype_ldouble
+ats2_itp_rootfinder_g0int2float_int_ldouble (atstype_int x)
+{
+  return x;
+}
+
+ats2_itp_rootfinder_inline atstype_ldouble
+ats2_itp_rootfinder_g0int2float_lint_ldouble (atstype_lint x)
+{
+  return x;
+}
+
+ats2_itp_rootfinder_inline atstype_float
 ats2_itp_rootfinder_g0float_epsilon_float (void)
 {
   return FLT_EPSILON;

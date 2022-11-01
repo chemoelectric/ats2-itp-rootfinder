@@ -57,6 +57,27 @@ typedef Integer = [i : int] integer i
 
 implement g1int2int<lintknd,lintknd> i = i
 
+extern fn g0int2float_int_float :
+  g0int intknd -<> g0float fltknd = "mac#%"
+extern fn g0int2float_lint_float :
+  g0int lintknd -<> g0float fltknd = "mac#%"
+implement g0int2float<intknd,fltknd> = g0int2float_int_float
+implement g0int2float<lintknd,fltknd> = g0int2float_lint_float
+
+extern fn g0int2float_int_double :
+  g0int intknd -<> g0float dblknd = "mac#%"
+extern fn g0int2float_lint_double :
+  g0int lintknd -<> g0float dblknd = "mac#%"
+implement g0int2float<intknd,dblknd> = g0int2float_int_double
+implement g0int2float<lintknd,dblknd> = g0int2float_lint_double
+
+extern fn g0int2float_int_ldouble :
+  g0int intknd -<> g0float ldblknd = "mac#%"
+extern fn g0int2float_lint_ldouble :
+  g0int lintknd -<> g0float ldblknd = "mac#%"
+implement g0int2float<intknd,ldblknd> = g0int2float_int_ldouble
+implement g0int2float<lintknd,ldblknd> = g0int2float_lint_ldouble
+
 extern fn g0float_epsilon_float : () -<> g0float fltknd = "mac#%"
 extern fn g0float_epsilon_double : () -<> g0float dblknd = "mac#%"
 extern fn g0float_epsilon_ldouble : () -<> g0float ldblknd = "mac#%"

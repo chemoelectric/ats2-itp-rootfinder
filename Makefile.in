@@ -678,7 +678,7 @@ TESTS_DEPS = itp-rootfinder/HATS/itp-rootfinder.hats \
 nodist_tests_test1_SOURCES = tests/test1_tests.c
 tests_test1_DEPENDENCIES = $(TESTS_DEPS)
 tests_test1_CPPFLAGS = $(AM_CPPFLAGS) -DATS_MEMALLOC_LIBC
-tests_test1_LDADD = libats2-itp-rootfinder.la
+tests_test1_LDADD = libats2-itp-rootfinder.la -lm
 nodist_list_ats_dependencies_SOURCES =  \
 	list-ats-dependencies_depsprog.c
 list_ats_dependencies_CPPFLAGS = $(AM_CPPFLAGS) -DATS_MEMALLOC_LIBC
