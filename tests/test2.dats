@@ -24,15 +24,17 @@
 
 %{^
 
-typedef __int128 i128;
+typedef __int128 my_i128;
 typedef atstype_int64 my_fixed32p32;
+
+#define MY_SCALE 0x100000000LL
 
 #define my_inline ATSinline()
 
 my_inline atsvoid_t0ype
 my_fprint_fixed32p32 (atstype_ref r, my_fixed32p32 x)
 {
-  fprintf ((FILE *) r, "%Lf", ((long double) x) / 0x100000000LL);
+  fprintf ((FILE *) r, "%Lf", ((long double) x) / MY_SCALE);
 }
 
 #define my_print_fixed32p32(x) my_fprint_fixed32p32 (stdout, (x))
@@ -41,7 +43,7 @@ my_fprint_fixed32p32 (atstype_ref r, my_fixed32p32 x)
 my_inline my_fixed32p32
 my_g0int2float_int_fixed32p32 (atstype_int x)
 {
-  return (((my_fixed32p32) x) * 0x100000000LL);
+  return (((my_fixed32p32) x) * MY_SCALE);
 }
 
 my_inline my_fixed32p32
@@ -60,6 +62,18 @@ my_inline my_fixed32p32
 my_g0float_sub_fixed32p32 (my_fixed32p32 x, my_fixed32p32 y)
 {
   return (x - y);
+}
+
+my_inline my_fixed32p32
+my_g0float_mul_fixed32p32 (my_fixed32p32 x, my_fixed32p32 y)
+{
+  return (my_fixed32p32) ((((my_i128) x) * y) / MY_SCALE);
+}
+
+my_inline my_fixed32p32
+my_g0float_div_fixed32p32 (my_fixed32p32 x, my_fixed32p32 y)
+{
+  return (my_fixed32p32) ((((my_i128) x) * MY_SCALE) / y);
 }
 
 %}
@@ -85,17 +99,31 @@ extern fn g0float_add_fixed32p32 :
   (fixed32p32, fixed32p32) -<> fixed32p32 = "mac#%"
 extern fn g0float_sub_fixed32p32 :
   (fixed32p32, fixed32p32) -<> fixed32p32 = "mac#%"
+extern fn g0float_mul_fixed32p32 :
+  (fixed32p32, fixed32p32) -<> fixed32p32 = "mac#%"
+extern fn g0float_div_fixed32p32 :
+  (fixed32p32, fixed32p32) -<> fixed32p32 = "mac#%"
 implement g0float_neg<fix32p32knd> = g0float_neg_fixed32p32
 implement g0float_add<fix32p32knd> = g0float_add_fixed32p32
 implement g0float_sub<fix32p32knd> = g0float_sub_fixed32p32
+implement g0float_mul<fix32p32knd> = g0float_mul_fixed32p32
+implement g0float_div<fix32p32knd> = g0float_div_fixed32p32
 
 #include "itp-rootfinder/HATS/itp-rootfinder.hats"
 
 implement
 main0 () =
   let
-    val x : fixed32p32 = g0i2f 1
-    val y : fixed32p32 = g0i2f 3
+    // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME
+    // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME
+    // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME
+    // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME
+
+    val x : fixed32p32 = g0i2f 10
+    val y : fixed32p32 = g0i2f ~3
     val () = println! (x + y)
+    val () = println! (x - y)
+    val () = println! (x * y)
+    val () = println! (x / y)
   in
   end
