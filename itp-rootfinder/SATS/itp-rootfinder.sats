@@ -49,8 +49,11 @@ exception rootfinder_exc of
 
 (*------------------------------------------------------------------*)
 
-(* Given an initial bracket (with the arguments in either order),
-   produce a refined bracket with the lesser-or-equal value first. *)
+(* Given an interval on which a root is isolated, find an interval of
+   width twice epsilon or less, within which the root lies. The ends
+   of the given interval can be given in either order. The result
+   interval is in lesser-greater order (although the interval may also
+   have length zero). *)
 
 (* rootbracketer_with_template_epsilon<tk> (a, b) *)
 fn {tk : tkind}
@@ -69,8 +72,9 @@ overload rootbracketer with rootbracketer_with_given_epsilon
 
 (*------------------------------------------------------------------*)
 
-(* Given an initial bracket (with the arguments in either order),
-   produce an estimate of the root. *)
+(* Given an interval on which a root is isolated, produce an estimate
+   of the root. The ends of the interval can be given in either
+   order. *)
 
 (* rootfinder_with_template_epsilon<tk> (a, b) *)
 fn {tk : tkind}
@@ -106,19 +110,6 @@ rootfinder$func :
 *)
 
 fn {tk : tkind}
-rootbracketer_fun_with_template_epsilon :
-  (g0float tk, g0float tk,
-   g0float tk -< !exn > g0float tk) -< !exn >
-    @(g0float tk, g0float tk)
-
-fn {tk : tkind}
-rootbracketer_fun_with_given_epsilon :
-  (g0float tk, g0float tk,
-   g0float tk -< !exn > g0float tk,
-   g0float tk) -< !exn >
-    @(g0float tk, g0float tk)
-
-fn {tk : tkind}
 rootfinder_fun_with_template_epsilon :
   (g0float tk, g0float tk,
    g0float tk -< !exn > g0float tk) -< !exn >
@@ -130,19 +121,6 @@ rootfinder_fun_with_given_epsilon :
    g0float tk -< !exn > g0float tk,
    g0float tk) -< !exn >
     g0float tk
-
-fn {tk : tkind}
-rootbracketer_cloref_with_template_epsilon :
-  (g0float tk, g0float tk,
-   g0float tk -< !exn,cloref > g0float tk) -< !exn >
-    @(g0float tk, g0float tk)
-
-fn {tk : tkind}
-rootbracketer_cloref_with_given_epsilon :
-  (g0float tk, g0float tk,
-   g0float tk -< !exn,cloref > g0float tk,
-   g0float tk) -< !exn >
-    @(g0float tk, g0float tk)
 
 fn {tk : tkind}
 rootfinder_cloref_with_template_epsilon :
@@ -157,20 +135,10 @@ rootfinder_cloref_with_given_epsilon :
    g0float tk) -< !exn >
     g0float tk
 
-overload rootbracketer_fun with
-  rootbracketer_fun_with_template_epsilon
-overload rootbracketer_fun with
-  rootbracketer_fun_with_given_epsilon
-
 overload rootfinder_fun with
   rootfinder_fun_with_template_epsilon
 overload rootfinder_fun with
   rootfinder_fun_with_given_epsilon
-
-overload rootbracketer_cloref with
-  rootbracketer_cloref_with_template_epsilon
-overload rootbracketer_cloref with
-  rootbracketer_cloref_with_given_epsilon
 
 overload rootfinder_cloref with
   rootfinder_cloref_with_template_epsilon

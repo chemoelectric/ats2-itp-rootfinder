@@ -166,16 +166,11 @@ rootfinder$kappa2 () =
 
 (*------------------------------------------------------------------*)
 
-fn {tk : tkind}
-root_bracket_finder
-          (a : g0float tk,
-           b : g0float tk)
-    :<!exn> @(g0float tk, g0float tk) =
+implement {tk}
+rootbracketer_with_template_epsilon (a, b) =
   (* The following code is based on an earlier implementation I wrote
      in Scheme. *)
   let
-    val () = assertloc (a <= b)
-
     typedef real = g0float tk
     macdef i2f = g0int2float<intknd,tk>
     macdef zero = i2f 0
@@ -227,6 +222,9 @@ root_bracket_finder
         loop (1L, sz2i (i2sz 8 * sizeof<Integer>))
       end
 
+    val @(a, b) =
+      (if a <= b then @(a, b) else @(b, a)) : @(real, real)
+
     val one_plus_phi =
       i2f (PHI_DENOMINATOR + PHI_NUMERATOR) / i2f PHI_DENOMINATOR
 
@@ -262,9 +260,7 @@ root_bracket_finder
           ya   : real,
           yb   : real)
         :<!exn> @(real, real) =
-      if n = g1i2i 0 then
-        @(a, b)
-      else if b - a <= two_eps then
+      if (n = g1i2i 0) + (b - a <= two_eps) then
         @(a, b)
       else
         let
@@ -324,29 +320,12 @@ root_bracket_finder
       loop (n_max, a, b, ya, yb)
   end
 
-(*------------------------------------------------------------------*)
-
-implement {tk}
-rootbracketer_with_template_epsilon (a, b) =
-  let
-    fn
-    bracketer (a0 : g0float tk,
-               b0 : g0float tk)
-        :<!exn> @(g0float tk, g0float tk) =
-      root_bracket_finder<tk> (a0, b0)
-  in
-    if a <= b then
-      bracketer (a, b)
-    else
-      bracketer (b, a)
-  end
-
 implement {tk}
 rootbracketer_with_given_epsilon (a, b, eps) =
   let
     implement rootfinder$epsilon<tk> () = eps
   in
-    rootbracketer_with_template_epsilon<tk> (a, b)
+    rootbracketer_with_template_epsilon (a, b)
   end
 
 implement {tk}
@@ -361,29 +340,12 @@ rootfinder_with_template_epsilon (a, b) =
 implement {tk}
 rootfinder_with_given_epsilon (a, b, eps) =
   let
-    macdef i2f = g0int2float<intknd,tk>
-    val @(a1, b1) = rootbracketer_with_given_epsilon<tk> (a, b, eps)
+    implement rootfinder$epsilon<tk> () = eps
   in
-    a1 + ((b1 - a1) / i2f 2)
+    rootfinder_with_template_epsilon (a, b)
   end
 
 (*------------------------------------------------------------------*)
-
-implement {tk}
-rootbracketer_fun_with_template_epsilon (a, b, f) =
-  let
-    implement rootfinder$func<tk> x = f x
-  in
-    rootbracketer<tk> (a, b)
-  end
-
-implement {tk}
-rootbracketer_fun_with_given_epsilon (a, b, f, eps) =
-  let
-    implement rootfinder$func<tk> x = f x
-  in
-    rootbracketer<tk> (a, b, eps)
-  end
 
 implement {tk}
 rootfinder_fun_with_template_epsilon (a, b, f) =
@@ -399,22 +361,6 @@ rootfinder_fun_with_given_epsilon (a, b, f, eps) =
     implement rootfinder$func<tk> x = f x
   in
     rootfinder<tk> (a, b, eps)
-  end
-
-implement {tk}
-rootbracketer_cloref_with_template_epsilon (a, b, f) =
-  let
-    implement rootfinder$func<tk> x = f x
-  in
-    rootbracketer<tk> (a, b)
-  end
-
-implement {tk}
-rootbracketer_cloref_with_given_epsilon (a, b, f, eps) =
-  let
-    implement rootfinder$func<tk> x = f x
-  in
-    rootbracketer<tk> (a, b, eps)
   end
 
 implement {tk}
