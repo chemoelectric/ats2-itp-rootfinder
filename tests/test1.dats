@@ -22,25 +22,46 @@
 implement
 main0 () =
   let
-    val r1 = rootfinder_fun (0.9, 1.1, lam x =<> (x * x) - 1.0)
-    val- true = (abs (r1 - 1.0) < 0.000001)
+    val root = rootfinder_fun (0.9, 1.1, lam x =<> (x * x) - 1.0)
+    val- true = (abs (root - 1.0) < 0.000001)
 
-    val r2 =
+    val root = rootfinder_fun (1.0, 1.0, lam x =<> (x * x) - 1.0)
+    val- true = (root = 1.0)
+
+    val root = rootfinder_fun (1.0, 300.0, lam x =<> (x * x) - 1.0)
+    val- true = (root = 1.0)
+
+    val root = rootfinder_fun (~300.0, 1.0, lam x =<> (x * x) - 1.0)
+    val- true = (root = 1.0)
+
+    val root =
       rootfinder_fun
         (~0.2L, 0.1L, lam x =<> $extfcall (ldouble, "sinl", x),
          0.0001L)
-    val- true = (abs r2 <= 0.0001L)
+    val- true = (abs root <= 0.0001L)
 
-    val r3 =
+    val root =
       rootfinder_cloref
         (3.0F, 3.2F, lam x =<cloref> $extfcall (float, "sinf", x))
-    val- true = (abs (r3 - 3.1415926535F) < 0.0001F)
+    val- true = (abs (root - 3.1415926535F) < 0.0001F)
 
-    val r3 =
+    val root =
       rootfinder_cloref
         (3.0F, 3.2F, lam x =<cloref> $extfcall (float, "sinf", x),
          0.01F)
-    val- true = (abs (r3 - 3.1415926535F) <= 0.01F)
+    val- true = (abs (root - 3.1415926535F) <= 0.01F)
+
+    implement rootfinder$func<dblknd> x = (x * x) - 1.0
+    val @(a, b) = rootbracketer (1.0, 300.0)
+    val- true = (a = 1.0) * (b = 1.0)
+
+    implement rootfinder$func<dblknd> x = (x * x) - 1.0
+    val @(a, b) = rootbracketer (~300.0, 1.0)
+    val- true = (a = 1.0) * (b = 1.0)
+
+    implement rootfinder$func<dblknd> x = (x * x) - 1.0
+    val @(a, b) = rootbracketer (0.0, 2.0, 0.001)
+    val- true = (1.0 - a <= 0.001) * (b - 1.0 <= 0.001)
   in
   end
 

@@ -299,7 +299,6 @@ rootbracketer_with_template_epsilon (a, b) =
 
           val yp = rootfinder$func xp
           val sigma_yp = sign yp
-
         in
           if sigma_yp = sigma_ya then
             (* yp has the same sign as ya. Make it the new ya. *)
