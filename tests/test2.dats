@@ -24,10 +24,12 @@
 
 %{^
 
+#include <inttypes.h>
+
 typedef __int128 my_i128;
 typedef atstype_int64 my_fixed32p32;
 
-#define MY_SCALE 0x100000000LL
+#define MY_SCALE (INT64_C(1) << 32)
 
 #define my_inline ATSinline()
 
