@@ -19,6 +19,7 @@
 (* A TEST OF FIXED-POINT. *)
 
 #include "share/atspre_staload.hats"
+#include "itp-rootfinder/HATS/itp-rootfinder.hats"
 
 #define ATS_EXTERN_PREFIX "my_"
 
@@ -43,7 +44,19 @@ my_fprint_fixed32p32 (atstype_ref r, my_fixed32p32 x)
 #define my_prerr_fixed32p32(x) my_fprint_fixed32p32 (stderr, (x))
 
 my_inline my_fixed32p32
+my_g0float_epsilon_fixed32p32 (void)
+{
+  return (my_fixed32p32) 1;
+}
+
+my_inline my_fixed32p32
 my_g0int2float_int_fixed32p32 (atstype_int x)
+{
+  return (((my_fixed32p32) x) * MY_SCALE);
+}
+
+my_inline my_fixed32p32
+my_g0int2float_lint_fixed32p32 (atstype_lint x)
 {
   return (((my_fixed32p32) x) * MY_SCALE);
 }
@@ -52,6 +65,12 @@ my_inline my_fixed32p32
 my_g0float_neg_fixed32p32 (my_fixed32p32 x)
 {
   return (-x);
+}
+
+my_inline my_fixed32p32
+my_g0float_abs_fixed32p32 (my_fixed32p32 x)
+{
+  return (x < 0) ? (-x) : x;
 }
 
 my_inline my_fixed32p32
@@ -78,6 +97,42 @@ my_g0float_div_fixed32p32 (my_fixed32p32 x, my_fixed32p32 y)
   return (my_fixed32p32) ((((my_i128) x) * MY_SCALE) / y);
 }
 
+my_inline atstype_bool
+my_g0float_eq_fixed32p32 (my_fixed32p32 x, my_fixed32p32 y)
+{
+  return (x == y);
+}
+
+my_inline atstype_bool
+my_g0float_neq_fixed32p32 (my_fixed32p32 x, my_fixed32p32 y)
+{
+  return (x != y);
+}
+
+my_inline atstype_bool
+my_g0float_lt_fixed32p32 (my_fixed32p32 x, my_fixed32p32 y)
+{
+  return (x < y);
+}
+
+my_inline atstype_bool
+my_g0float_lte_fixed32p32 (my_fixed32p32 x, my_fixed32p32 y)
+{
+  return (x <= y);
+}
+
+my_inline atstype_bool
+my_g0float_gt_fixed32p32 (my_fixed32p32 x, my_fixed32p32 y)
+{
+  return (x > y);
+}
+
+my_inline atstype_bool
+my_g0float_gte_fixed32p32 (my_fixed32p32 x, my_fixed32p32 y)
+{
+  return (x >= y);
+}
+
 %}
 
 tkindef fixed32p32_kind = "my_fixed32p32"
@@ -93,9 +148,15 @@ overload fprint with fprint_fixed32p32
 implement fprint_val<fixed32p32> = fprint_fixed32p32
 
 extern fn g0int2float_int_fixed32p32 : int -<> fixed32p32 = "mac#%"
-implement g0int2float<intknd,fix32p32knd> = g0int2float_int_fixed32p32
+extern fn g0int2float_lint_fixed32p32 : lint -<> fixed32p32 = "mac#%"
+implement g0int2float<intknd,fix32p32knd> =
+  g0int2float_int_fixed32p32
+implement g0int2float<lintknd,fix32p32knd> =
+  g0int2float_lint_fixed32p32
 
 extern fn g0float_neg_fixed32p32 :
+  fixed32p32 -<> fixed32p32 = "mac#%"
+extern fn g0float_abs_fixed32p32 :
   fixed32p32 -<> fixed32p32 = "mac#%"
 extern fn g0float_add_fixed32p32 :
   (fixed32p32, fixed32p32) -<> fixed32p32 = "mac#%"
@@ -105,27 +166,64 @@ extern fn g0float_mul_fixed32p32 :
   (fixed32p32, fixed32p32) -<> fixed32p32 = "mac#%"
 extern fn g0float_div_fixed32p32 :
   (fixed32p32, fixed32p32) -<> fixed32p32 = "mac#%"
+extern fn g0float_eq_fixed32p32 :
+  (fixed32p32, fixed32p32) -<> bool = "mac#%"
+extern fn g0float_neq_fixed32p32 :
+  (fixed32p32, fixed32p32) -<> bool = "mac#%"
+extern fn g0float_lt_fixed32p32 :
+  (fixed32p32, fixed32p32) -<> bool = "mac#%"
+extern fn g0float_lte_fixed32p32 :
+  (fixed32p32, fixed32p32) -<> bool = "mac#%"
+extern fn g0float_gt_fixed32p32 :
+  (fixed32p32, fixed32p32) -<> bool = "mac#%"
+extern fn g0float_gte_fixed32p32 :
+  (fixed32p32, fixed32p32) -<> bool = "mac#%"
 implement g0float_neg<fix32p32knd> = g0float_neg_fixed32p32
+implement g0float_abs<fix32p32knd> = g0float_abs_fixed32p32
 implement g0float_add<fix32p32knd> = g0float_add_fixed32p32
 implement g0float_sub<fix32p32knd> = g0float_sub_fixed32p32
 implement g0float_mul<fix32p32knd> = g0float_mul_fixed32p32
 implement g0float_div<fix32p32knd> = g0float_div_fixed32p32
+implement g0float_eq<fix32p32knd> = g0float_eq_fixed32p32
+implement g0float_neq<fix32p32knd> = g0float_neq_fixed32p32
+implement g0float_lt<fix32p32knd> = g0float_lt_fixed32p32
+implement g0float_lte<fix32p32knd> = g0float_lte_fixed32p32
+implement g0float_gt<fix32p32knd> = g0float_gt_fixed32p32
+implement g0float_gte<fix32p32knd> = g0float_gte_fixed32p32
 
-#include "itp-rootfinder/HATS/itp-rootfinder.hats"
+extern fn g0float_epsilon_fixed32p32 : () -<> fixed32p32 = "mac#%"
+implement rootfinder$g0float_epsilon<fix32p32knd> =
+  g0float_epsilon_fixed32p32
+
+macdef i2fx = g0int2float<intknd,fix32p32knd>
 
 implement
 main0 () =
   let
-    // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME
-    // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME
-    // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME
-    // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME // FIXME
 
-    val x : fixed32p32 = g0i2f 10
-    val y : fixed32p32 = g0i2f ~3
-    val () = println! (x + y)
-    val () = println! (x - y)
-    val () = println! (x * y)
-    val () = println! (x / y)
+    implement
+    rootfinder$g0float_pow<fix32p32knd> (x, y) = x * x
+
+    val root = rootfinder_fun (i2fx 9 / i2fx 10,
+                               i2fx 11 / i2fx 10,
+                               lam x =<> (x * x) - i2fx 1)
+    val- true = (abs (root - i2fx 1) < i2fx 1 / i2fx 1000000)
+
+    val root = rootfinder_fun (i2fx 9 / i2fx 10,
+                               i2fx 11 / i2fx 10,
+                               lam x =<> (x * x) - i2fx 1,
+                               i2fx 1 / i2fx 10000)
+    val- true = (abs (root - i2fx 1) <= i2fx 1 / i2fx 10000)
+
+    val root = rootfinder_cloref (i2fx 9 / i2fx 10,
+                                  i2fx 11 / i2fx 10,
+                                  lam x =<cloref> (x * x) - i2fx 1)
+    val- true = (abs (root - i2fx 1) < i2fx 1 / i2fx 1000000)
+
+    val root = rootfinder_cloref (i2fx 9 / i2fx 10,
+                                  i2fx 11 / i2fx 10,
+                                  lam x =<cloref> (x * x) - i2fx 1,
+                                  i2fx 1 / i2fx 10000)
+    val- true = (abs (root - i2fx 1) <= i2fx 1 / i2fx 10000)
   in
   end
