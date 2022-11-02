@@ -98,10 +98,12 @@ implement rootfinder$g0float_pow<ldblknd> = g0float_pow_ldouble
 
 (*------------------------------------------------------------------*)
 
-(* Power of two, by the squaring method. *)
+(* Power of two, by the squaring method, times a given factor. *)
 fn {tki, tkf : tkind}
-g1int_g0float_pow2 {k : nat}
-                   (k : g1int (tki, k))
+g1int_g0float_pow2_times_value
+          {k     : nat}
+          (k     : g1int (tki, k),
+           value : g0float tkf)
     :<> g0float tkf =
   let
     fun
@@ -131,7 +133,7 @@ g1int_g0float_pow2 {k : nat}
           end
       end
   in
-    loop (g0i2f 2, k, g0i2f 1)
+    loop (g0i2f 2, k, value)
   end
 
 (*------------------------------------------------------------------*)
@@ -266,8 +268,6 @@ rootbracketer_with_template_epsilon (a, b) =
         @(a, b)
       else
         let
-          val two_raised_n = g1int_g0float_pow2 n
-
           val b_sub_a = b - a
           val half_of_b_sub_a = (b - a) / i2f 2
 
@@ -288,7 +288,8 @@ rootbracketer_with_template_epsilon (a, b) =
             else
               xbisect
 
-          val r = (two_raised_n * eps) - half_of_b_sub_a
+          val r =
+            g1int_g0float_pow2_times_value (n, eps) - half_of_b_sub_a
 
           (* xp – the projection of xt onto [x½-r,x½+r]. *)
           val xp =
