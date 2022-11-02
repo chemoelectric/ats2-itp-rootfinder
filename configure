@@ -19161,6 +19161,8 @@ printf "%s\n" "$as_me: WARNING: Please consider installing and using GNU Make:
 
 ac_config_files="$ac_config_files list-ats-dependencies.dats"
 
+ac_config_files="$ac_config_files ats2-itp-rootfinder.pc"
+
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -20309,6 +20311,7 @@ do
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "GNUmakefile") CONFIG_FILES="$CONFIG_FILES GNUmakefile:Makefile.in" ;;
     "list-ats-dependencies.dats") CONFIG_FILES="$CONFIG_FILES list-ats-dependencies.dats" ;;
+    "ats2-itp-rootfinder.pc") CONFIG_FILES="$CONFIG_FILES ats2-itp-rootfinder.pc" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
