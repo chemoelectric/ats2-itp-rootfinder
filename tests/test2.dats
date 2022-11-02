@@ -200,9 +200,10 @@ macdef i2fx = g0int2float<intknd,fix32p32knd>
 implement
 main0 () =
   let
-
+    (* An alternative way to set kappa2 to 2, avoiding the need to
+       write an actual pow function for our fixed-point type: *)
     implement
-    rootfinder$g0float_pow<fix32p32knd> (x, y) = x * x
+    rootfinder$g0float_pow<fix32p32knd> (x, _kappa2) = x * x
 
     val root = rootfinder_fun (i2fx 9 / i2fx 10,
                                i2fx 11 / i2fx 10,
