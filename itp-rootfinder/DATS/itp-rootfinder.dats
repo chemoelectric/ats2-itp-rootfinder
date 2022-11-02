@@ -98,46 +98,6 @@ implement rootfinder$g0float_pow<ldblknd> = g0float_pow_ldouble
 
 (*------------------------------------------------------------------*)
 
-(* Power of two, by the squaring method, times a given factor. *)
-fn {tki, tkf : tkind}
-g1int_g0float_pow2_times_value
-          {k     : nat}
-          (k     : g1int (tki, k),
-           value : g0float tkf)
-    :<> g0float tkf =
-  let
-    fun
-    loop
-         {i : nat}
-         .<i>.
-         (b     : g0float tkf,
-          i     : g1int (tki, i),
-          accum : g0float tkf)
-        :<> g0float tkf =
-      let
-        val ihalf = half i
-      in
-        if ihalf + ihalf = i then
-          begin
-            if ihalf = g1i2i 0 then
-              accum
-            else
-              loop (b * b, ihalf, accum)
-          end
-        else
-          begin
-            if ihalf = g1i2i 0 then
-              accum * b
-            else
-              loop (b * b, ihalf, accum * b)
-          end
-      end
-  in
-    loop (g0i2f 2, k, value)
-  end
-
-(*------------------------------------------------------------------*)
-
 implement {tk}
 rootfinder$epsilon () =
   let
@@ -224,6 +184,35 @@ rootbracketer_with_template_epsilon (a, b) =
         loop (1L, sz2i (i2sz 8 * sizeof<Integer>))
       end
 
+    (* Power of two, by the squaring method, times a given factor. *)
+    fn {}
+    pow2_times_value
+              {k     : nat}
+              (k     : integer k,
+               value : real)
+        :<> real =
+      let
+        fun
+        loop
+             {i : nat}
+             .<i>.
+             (b     : real,
+              i     : integer i,
+              accum : real)
+            :<> real =
+          let
+            val ihalf = half i
+            val accum = if ihalf + ihalf = i then accum else accum * b
+          in
+            if ihalf = g1i2i 0 then
+              accum
+            else
+              loop (b * b, ihalf, accum)
+          end
+      in
+        loop (i2f 2, k, value)
+      end
+
     val @(a, b) =
       (if a <= b then @(a, b) else @(b, a)) : @(real, real)
 
@@ -288,8 +277,7 @@ rootbracketer_with_template_epsilon (a, b) =
             else
               xbisect
 
-          val r =
-            g1int_g0float_pow2_times_value (n, eps) - half_of_b_sub_a
+          val r = pow2_times_value (n, eps) - half_of_b_sub_a
 
           (* xp – the projection of xt onto [x½-r,x½+r]. *)
           val xp =
