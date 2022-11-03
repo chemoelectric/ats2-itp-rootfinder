@@ -173,7 +173,7 @@ xats-c-clean:
 
 #--------------------------------------------------------------------------
 #
-# FIXME: Tests will go here.
+# Tests go here.
 #
 
 TESTS_DEPS =
