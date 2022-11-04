@@ -160,7 +160,7 @@ nodist_libats2_itp_rootfinder_la_SOURCES =
 nodist_libats2_itp_rootfinder_la_SOURCES += $(ITP_ROOTFINDER_SATS_C)
 nodist_libats2_itp_rootfinder_la_SOURCES += $(ITP_ROOTFINDER_DATS_C)
 
-# Make the %_tests.o files depend on %_tests.c files.
+# Make the %.o files depend on %.c files.
 $(foreach source_file, \
 	$(nodist_libats2_itp_rootfinder_la_SOURCES), \
 	$(eval $(patsubst %.c,%.$(OBJEXT),$(source_file)): $(source_file)))
