@@ -150,8 +150,6 @@ ITP_ROOTFINDER_DATS_C = itp-rootfinder/DATS/itp-rootfinder_dats.c
 ITP_ROOTFINDER_CATS = itp-rootfinder/CATS/itp-rootfinder.cats
 ITP_ROOTFINDER_HATS = itp-rootfinder/HATS/itp-rootfinder.hats
 
-$(ITP_ROOTFINDER_SATS_C/.c/.$(OBJEXT))
-
 nobase_dist_pkginclude_HEADERS =
 nobase_dist_pkginclude_HEADERS += $(ITP_ROOTFINDER_SATS)
 nobase_dist_pkginclude_HEADERS += $(ITP_ROOTFINDER_DATS)

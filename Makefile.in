@@ -685,7 +685,7 @@ nodist_libats2_itp_rootfinder_la_SOURCES = $(ITP_ROOTFINDER_SATS_C) \
 
 #--------------------------------------------------------------------------
 #
-# FIXME: Tests will go here.
+# Tests go here.
 #
 TESTS_DEPS = itp-rootfinder/HATS/itp-rootfinder.hats \
 	itp-rootfinder/SATS/itp-rootfinder.sats \
@@ -1772,8 +1772,6 @@ ats-includes-distclean:
 %_depsprog.c: %.dats $(PATSOPT_DEPS)
 	@$(MKDIR_P) $(@D)
 	$(call v,PATSOPT)$(PATSOPT) -o $(@) $(TOTAL_PATSOPTFLAGS) -d $(<)
-
-$(ITP_ROOTFINDER_SATS_C/.c/.$(OBJEXT))
 
 # Make the %_tests.o files depend on %_tests.c files.
 $(foreach source_file, \
