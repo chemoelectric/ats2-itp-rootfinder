@@ -167,8 +167,8 @@ rootbracketer_with_template_epsilon (a, b) =
       let
         fun
         loop {i : pos}
-             {k : nat}
-             .<k>.
+             {k : int | ~1 <= k}
+             .<k + 1>.
              (i : integer i,
               k : int k)
             :<!exn> [i : pos] integer i =
@@ -181,7 +181,9 @@ rootbracketer_with_template_epsilon (a, b) =
 
         prval () = lemma_sizeof {Integer} ()
       in
-        loop (1L, sz2i (i2sz 8 * sizeof<Integer>))
+        (* Subtract one from the bit size to account for the sign
+           bit. *)
+        loop (1L, sz2i (i2sz 8 * sizeof<Integer>) - 1)
       end
 
     (* Power of two, by the squaring method, times a given factor. *)

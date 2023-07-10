@@ -1773,7 +1773,7 @@ ats-includes-distclean:
 	@$(MKDIR_P) $(@D)
 	$(call v,PATSOPT)$(PATSOPT) -o $(@) $(TOTAL_PATSOPTFLAGS) -d $(<)
 
-# Make the %_tests.o files depend on %_tests.c files.
+# Make the %.o files depend on %.c files.
 $(foreach source_file, \
 	$(nodist_libats2_itp_rootfinder_la_SOURCES), \
 	$(eval $(patsubst %.c,%.$(OBJEXT),$(source_file)): $(source_file)))
